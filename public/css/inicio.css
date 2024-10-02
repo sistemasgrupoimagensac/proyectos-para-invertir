@@ -1,0 +1,273 @@
+.likeButton {
+    cursor: pointer;
+}
+p{
+    text-align: justify;
+}
+.select2-container--default .select2-selection--single{
+    border:none !important;
+}
+.btnmaps{
+    display: inline  !important;
+    align-items: center !important;
+    text-align: center !important;
+    border-radius: 45px !important;
+    
+}
+@media screen and (max-width:575px){
+   .paginacion ul{
+    overflow: hidden
+   }
+    /* .detalle-2 p{
+        text-align: start;
+    }
+    .contenido{
+        margin-top: 9.5rem !important;
+    }
+    .owl-carousel .owl-item img{
+        width: auto !important;
+        text-align: center;
+        align-items: center;
+    } */
+    .contenido{
+        margin-top:11rem !important;
+    }
+    .seccion-1 p{
+        font-size: 0.57rem !important;
+    }
+    .logo{
+        height: 3rem !important;
+    }
+ 
+    .menu-mobil{
+        /* background-color: #01276A; */
+        /* padding: 1rem; */
+    }
+    .menu-mobil img{
+        height: 1.5rem;
+        width: auto;
+    }
+    .menu-mobil p{
+        text-align: center;
+        color: #01276A !important;
+    }
+    div .item{
+        text-align: center;
+    }
+    .inmuebles-mobil a{
+        text-decoration: none !important;
+        color: #01276A !important;
+        font-size: 0.8rem !important;
+        line-height: 0px !important;
+    }
+    .icono-ubicacion{
+        height: 30px;
+    }
+ 
+    .producto p{
+        line-height: 18px;
+        color: #01276A;
+        font-size: 1rem;
+        text-align: start;
+    }
+    .producto h2{
+        color: #01276A;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    .producto{
+        position: relative;
+    }
+    .heart{
+        position: absolute;
+        top:10px;
+        right:10px;
+    }
+}
+
+@media screen and (max-width: 991px) and (min-width: 576px){
+    .contenido{
+        margin-top: 12rem !important;
+    }
+    .img-producto1{
+        min-width: 100% !important;
+    }
+    .contenido-producto{
+        margin-top:10rem ;
+    }
+    .inmuebles-mobil img {
+        height: 1.5rem !important;
+    }
+    .inmuebles-mobil {
+        text-align: center;
+    }
+    .inmuebles-mobil a{
+        text-decoration: none !important;
+        color: #01276A !important;
+        font-size: 0.8rem !important;
+        line-height: 0px !important;
+    }
+    .item{
+        align-items: center !important;
+        text-align: center !important;
+    }
+    .item a{
+        align-items: center !important;
+        text-align: center !important;
+    }
+    .item img{
+        align-items: center !important;
+        text-align: center !important;
+    }
+}
+@media screen and (max-width: 1366px) and (min-width: 1336px) {
+    .producto{
+        position: relative;
+    }
+    .heart{
+        position: absolute;
+        top:10px;
+        right:10px;
+    }
+}
+
+@media screen and (min-width: 1367px) {
+    .img-producto1{
+        min-width: 100% !important;
+        min-height: 100% !important;
+    } 
+    .producto{
+        position: relative;
+    }
+    .heart{
+        position: absolute;
+        top:10px;
+        right:10px;
+    }
+    .producto p{
+        
+    }.producto h1{
+        font-size: 1.2rem;
+    }
+}
+@media screen and (min-width: 1599px){
+
+}
+.seccion-1{
+    background-color: #01276A;
+}
+.seccion-2 .logo{
+    height: 80px;
+}
+.seccion-1 p{
+    padding:1rem;
+    color: white;
+}
+.opciones .rounded-circle{
+    padding: 10px;
+    background-color: #01276A;
+}
+.opciones{
+    color: #01276A;
+}
+body {
+    font-family: 'Poppins', sans-serif !important;
+  }    
+.horizontal-list {
+    list-style: none;
+    display: flex;
+    padding: 0;
+}
+.horizontal-list li {
+    margin-right: 10px;
+}
+.contenido-1 img{   
+    width: 100%;
+}
+.item{
+    padding-right: 0 !important;
+}
+.item-right{
+    background-color: rgba(249, 249, 251, 1);
+} .img-producto img{
+    min-width: 100% !important;
+    min-height: 100% !important;
+}
+.img-producto1{
+    min-width: 100% !important;
+    min-height: 100% !important;
+} 
+.producto{
+    position: relative;
+}
+.heart{
+    position: absolute;
+    top:20px;
+    right:20px;
+}
+.producto h1{
+    font-size: 1.2rem;
+}
+.inmuebles-mobil img{
+    height: 30px;
+}
+.inmuebles-mobil{
+    text-align: center !important;
+}
+.item{
+    align-items: center;
+    text-align: center;
+}
+.item img{
+    height: 20px;
+}
+.item a{
+    font-size:.8rem ;
+    text-decoration: none;
+    color: #01276A;
+}
+.wiguet.visible {
+    transform: translateY(0%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.wiguet.hidden {
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+}
+.wiguet{
+  border-top: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.card-inmueble-image {
+    width: 100%;
+    height: 16rem;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-inmueble-title, .card-inmuebles-features {
+    font-size: 1rem;
+}
+
+.card-monto-financiamiento {
+    font-size: 2.5rem;
+}
+
+.card-inmueble {
+    color: #00266A;
+}
+
+@media (min-width: 992px) {
+    .card-inmueble {
+        height: 350px;
+    }
+
+    .card-inmueble-content, .card-inmueble-image {
+        height: 100%;
+    }
+
+    .card-inmueble-title {
+        font-size: 1.4rem;
+    }
+}

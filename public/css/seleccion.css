@@ -1,0 +1,108 @@
+@media screen and (min-width:1000px) {
+    .heartImage{
+        height: 60px;
+    }
+    
+}
+.likeButton {
+    cursor: pointer;
+}
+.contenido{
+    position: relative;
+}
+.cajamegusta{
+    position: absolute;
+    right: 20px;
+}
+.btnmaps{
+    display: inline  !important;
+    align-items: center !important;
+    text-align: center !important;
+    border-radius: 45px !important;
+}
+.detalle-2 h3{
+    font-size: 1.5rem !important;
+    font-weight: bold;
+}
+.detalle-2 img{
+    height: 80px;
+}
+*{
+    color: #00266A;
+}
+.select2-container--default .select2-selection--single{
+    border:none !important;
+}
+.seccion-1{
+    background-color: #01276A;
+}
+.seccion-2 .logo{
+    height: 80px;
+}
+.seccion-1 p{
+    padding:1rem;
+    color: white;
+}
+.opciones .rounded-circle{
+    padding: 10px;
+    background-color: #01276A;
+}
+.opciones{
+    color: #01276A;
+}
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+  } 
+.imagen-sitio img{
+    height: 200px !important;
+    width: 400px !important;
+}
+.inmuebles-mobil img{
+    height: 30px;
+}
+.inmuebles-mobil{
+    text-align: center !important;
+}
+.item{
+    align-items: center;
+    text-align: center;
+}
+.item img{
+    height: 20px;
+}
+.item a{
+    font-size:.8rem ;
+    text-decoration: none;
+    color: #01276A;
+}
+@media screen and (max-width: 991px) and (min-width: 576px){
+    .contenido{
+        margin-top: 6.4rem !important;
+    }
+    .col-sm-6{
+        text-align: center !important;
+        align-items: center !important;
+       
+    }
+    .col-sm-6 p{
+        padding: 0px !important;
+        text-align: center !important;
+        align-items: center !important;
+    }
+    .col-sm-6 h3{
+        padding: 0px !important;
+        text-align: center !important;
+        align-items: center !important;
+        line-height: 8px !important;
+    }
+}
+@media screen and (max-width:575px) {
+    .contenido{
+        margin-top: 6.4rem;
+    }
+    .detalle-2 img{
+        text-align: center !important;
+        align-items: center !important;
+    }
+}

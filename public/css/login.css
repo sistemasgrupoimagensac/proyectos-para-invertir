@@ -1,0 +1,49 @@
+.login-bg {
+    background-image: url("./img/bg-login.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+    background-position: 80% 10%;
+    background-color: #01276A;
+    opacity: .87;
+    background-blend-mode: multiply;
+}
+
+.form {
+    background-color: #F3F3F3;
+    border-radius: 15px;
+}
+
+.form .tab {
+    padding: 35px 35px 35px 35px;
+    text-align: center;
+}
+.tab img{
+    max-height: 70px;
+    margin: 15px;
+   
+}
+.tab p{
+    color: #01276A;
+    font-weight: bold;
+}
+.tab a{
+    text-align: start;
+}
+.tab .col-auto .btn{
+    color: #F3F3F3;
+    background-color: #01276A;
+    padding:10px 55px 10px 55px;
+}
+.input-group-text{
+    padding: 0px;
+    background-color: white;
+    font-size: 0rem;
+    border-left:0px solid;
+}.input-group-text img{
+    height: 15px;
+}
+.form-control-password{
+    border-right: 0px;
+}

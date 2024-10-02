@@ -1,0 +1,11 @@
+.form{
+    padding: 3rem;
+}
+.tab{
+    padding: 10px 100px;
+}
+.form .btn{
+    color: white;
+    background-color: #01276A;
+    width: 100%;
+}
