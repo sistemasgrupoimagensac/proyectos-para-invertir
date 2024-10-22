@@ -22,7 +22,7 @@ use App\Http\Controllers\UbicacionController;
 
 Route::get('/', function () {
     return view('login.login');
-})->middleware('guest')->name('login1');
+})->middleware('guest')->name('login');
 
 Auth::routes();
 
@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home',[InicioController::class,'index'])->name('inicio');
     Route::get('/detalle/{id}',[DetalleInmuebleController::class,'index'])->name('detalle');
     Route::post('/me_interesa',[InicioController::class,'meInteresa'])->name('meInteresa');
+    Route::post('/aceptar-proyecto',[InicioController::class,'aceptar_proyecto'])->name('aceptar_proyecto');
+    Route::post('/desaprobar-proyecto',[InicioController::class,'desaprobar_proyecto'])->name('desaprobar_proyecto');
     Route::post('/logout', [LoginController::class,'logout'])->name('logout');
     Route::get('/ubicacion',[UbicacionController::class,'index'])->name('ubicacion');
     Route::get('/favoritos',[FavoritosController::class,'index'])->name('favoritos');

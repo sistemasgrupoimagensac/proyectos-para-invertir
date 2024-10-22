@@ -315,19 +315,38 @@
                 </div>
             </div>
         </div>
-        <div class="heart text-center likeButton" data-co-prestamo="{{ $item->co_prestamo }}">
-            @if($item->interesado)
-                @if($item->interesado->estado == 0)
-                    <img src="img/vector/corazon.png" alt="" class="heartImage" data-toggle="tooltip" title="Al poner como favorito este proyecto contacta con tu analista para obtener este proyecto.">
+        <div style="position: absolute; top:0px; right:0px" >
+            <div style="position:relative" class="heart text-center likeButton" data-co-prestamo="{{ $item->co_prestamo }}">
+                @if($item->interesado)
+                    @if($item->interesado->estado == 0)
+                        <img src="img/vector/corazon.png" alt="" class="heartImage" data-toggle="tooltip" title="Al poner como favorito este proyecto contacta con tu analista para obtener este proyecto.">
+                    @else
+                        <img src="img/vector/corazonlleno.png" class="heartImage" alt="Corazón lleno" data-toggle="tooltip" title="Contacta con tu analista para obtener cuanto antes para obtener este proyecto.">
+                    @endif
                 @else
-                    <img src="img/vector/corazonlleno.png" class="heartImage" alt="Corazón lleno" data-toggle="tooltip" title="Contacta con tu analista para obtener cuanto antes para obtener este proyecto.">
+                    <img src="img/vector/corazon.png" alt="" class="heartImage" data-toggle="tooltip" title="Al poner como favorito este proyecto contacta con tu analista para obtener este royecto.">
+                @endif
+                
+                <input type="hidden" value="{{ $item->co_prestamo }}" name="co_prestamo">
+                <p class="pt-2">Interesados: {{ $totalLikesPorPrestamo[$item->co_prestamo] ?? 0 }}</p>
+            </div>
+            @if ( $item->co_ocurrencia_actual == 34 )
+                @if ( $item->aprobadoPorUserActual )
+                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
+                        <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span> 
+                        <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="{{ $item->co_prestamo }}">
+                            <img src="{{ asset('img/desaproved.png') }}" style="height: 3rem;" alt="Desaprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                        </a>
+                    </p>
                 @endif
             @else
-                <img src="img/vector/corazon.png" alt="" class="heartImage" data-toggle="tooltip" title="Al poner como favorito este proyecto contacta con tu analista para obtener este royecto.">
+                <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
+                    <span style="display: inline-block; white-space: pre-line">Aprobar<br>proyecto</span> 
+                    <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="{{ $item->co_prestamo }}">
+                        <img src="{{ asset('img/aproved-white.png') }}" style="height: 3rem;" alt="Aprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                    </a>
+                </p>
             @endif
-            
-            <input type="hidden" value="{{ $item->co_prestamo }}" name="co_prestamo">
-            <p class="pt-2">Interesados: {{ $totalLikesPorPrestamo[$item->co_prestamo] ?? 0 }}</p>
         </div>
     </div>
     @endforeach
@@ -530,6 +549,118 @@
             console.error('Error al dar like:', error);
         });
     }
+
+    const agregarEventoDesaprobarProyecto = codProyecto => {
+        const $btnDesaprobarProyecto = document.querySelector(`.btnDesaprobarProyecto[data-co-prestamoDesaprobar='${codProyecto}']`);
+
+        if ( $btnDesaprobarProyecto ) {
+            $btnDesaprobarProyecto.addEventListener('click', function(event) {
+                event.preventDefault();
+                desaprobarProyecto(codProyecto);
+            });
+        }
+    };
+
+    const agregarEventoAceptarProyecto = codProyecto => {
+        const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
+        if ($btnAceptarProyecto) {
+            $btnAceptarProyecto.addEventListener('click', function(event) {
+                event.preventDefault();
+                aceptarProyecto(codProyecto);
+            });
+        }
+    };
+
+    const aceptarProyecto = codProyecto => {
+        axios.post('/aceptar-proyecto', {
+            codigo_prestamo: codProyecto,
+        })
+        .then(function (response) {
+
+            if ( response.data.http_code === 200 ) {
+                const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
+                const $contenedorBoton = $btnAceptarProyecto.closest('p');
+                const nuevoBotonHTML = `
+                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
+                        <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span> 
+                        <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="${codProyecto}">
+                            <img src="${window.location.origin}/img/desaproved.png" style="height: 3rem;" alt="Desaprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                        </a>
+                    </p>
+                `;
+                $contenedorBoton.outerHTML = nuevoBotonHTML;
+                agregarEventoDesaprobarProyecto(codProyecto);
+            } else {
+                alert( response.data.message )
+            }
+        })
+        .catch(function (error) {
+            console.error('Error al aprobar el proyecto:', error);
+        });
+    }
+
+    const desaprobarProyecto = codProyecto => {
+        axios.post('/desaprobar-proyecto', {
+            codigo_prestamo: codProyecto,
+        })
+        .then(function (response) {
+
+            if ( response.data.http_code === 200 ) {
+                const $btnDesaprobarProyecto = document.querySelector(`.btnDesaprobarProyecto[data-co-prestamoDesaprobar='${codProyecto}']`);
+                const $contenedorBoton = $btnDesaprobarProyecto.closest('p');
+                const nuevoBotonHTML = `
+                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
+                        <span style="display: inline-block; white-space: pre-line">Aprobar<br>proyecto</span> 
+                        <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="${codProyecto}">
+                            <img src="${window.location.origin}/img/aproved-white.png" style="height: 3rem;" alt="Aprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                        </a>
+                    </p>
+                `;
+                $contenedorBoton.outerHTML = nuevoBotonHTML;
+                agregarEventoAceptarProyecto(codProyecto);
+            } else {
+                alert( response.data.message )
+            }
+        })
+        .catch(function (error) {
+            console.error('Error al aprobar el proyecto:', error);
+        });
+    }
+
+    const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto')
+    $btnsAceptarProyecto.forEach( ($btnAceptarProyecto) => {
+        $btnAceptarProyecto.addEventListener('click', function() {
+            event.preventDefault();
+            const $codigoProyecto = this.getAttribute('data-co-prestamoAceptar')
+            aceptarProyecto($codigoProyecto)
+        });
+    });
+
+    const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto')
+    $btnsDesaprobarProyecto.forEach( ($btnDesaprobarProyecto) => {
+        $btnDesaprobarProyecto.addEventListener('click', function() {
+            event.preventDefault();
+            const $codigoProyecto = this.getAttribute('data-co-prestamoDesaprobar')
+            desaprobarProyecto($codigoProyecto)
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Agregar eventos a los botones "Aprobar proyecto"
+    const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto');
+    $btnsAceptarProyecto.forEach($btnAceptarProyecto => {
+        const codProyecto = $btnAceptarProyecto.getAttribute('data-co-prestamoAceptar');
+        agregarEventoAceptarProyecto(codProyecto);
+    });
+
+    // Agregar eventos a los botones "Desaprobar proyecto"
+    const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto');
+    $btnsDesaprobarProyecto.forEach($btnDesaprobarProyecto => {
+        const codProyecto = $btnDesaprobarProyecto.getAttribute('data-co-prestamoDesaprobar');
+        agregarEventoDesaprobarProyecto(codProyecto);
+    });
+});
+
 </script>
 </body>
 
