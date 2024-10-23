@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MeInteresa;
+use App\PPersona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,10 @@ class DetalleInmuebleController extends Controller
 
         $detalle = DB::table('p_solicitud_prestamo')
                 ->join('p_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo', 'p_prestamo.co_solicitud_prestamo')                
+                ->leftJoin('r_prestamo_inversionista', function($join) {
+                    $join->on('r_prestamo_inversionista.co_prestamo', '=', 'p_prestamo.co_prestamo')
+                         ->where('r_prestamo_inversionista.in_estado', '=', 1);
+                }) 
                 ->join('a_tiempo_pago', 'p_solicitud_prestamo.co_tiempo_pago', 'a_tiempo_pago.co_tiempo_pago')
                 ->join('a_forma_pago', 'p_solicitud_prestamo.co_forma_pago', 'a_forma_pago.co_forma_pago')
                 ->leftJoin('a_tipo_moneda', 'p_solicitud_prestamo.co_tipo_moneda', 'a_tipo_moneda.co_tipo_moneda')
@@ -39,6 +44,8 @@ class DetalleInmuebleController extends Controller
                     'no_tiempo_pago', 'p_solicitud_prestamo.nu_total_solicitado', 'p_solicitud_prestamo.co_solicitud_prestamo',
                     'p_prestamo.fe_usuario_modifica', 'p_prestamo.co_estado', 'a_estado.no_estado',
                     'p_prestamo.co_prestamo',  
+                    'p_prestamo.co_ocurrencia_actual',  
+                    'r_prestamo_inversionista.co_inversionista',
                     'nu_monto_prestamo',
                     'a_tipo_moneda.nc_tipo_moneda',
                     'co_unico_solicitud', 'co_unico_prestamo', 
@@ -60,6 +67,20 @@ class DetalleInmuebleController extends Controller
             abort(404);
         }
 
+        $aprobadoPorUserActual = false;
+        if ( $detalle->co_ocurrencia_actual == 34 ) {
+            $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
+                ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
+                ->where('soli.in_estado', 1)
+                ->where('p_persona.in_estado', 1)
+                ->where('p_persona.co_persona', Auth::user()->inversionista_id)
+                ->select('pi.co_inversionista')
+            ->first();
+            if ( $p_inversionista && $detalle->co_inversionista == $p_inversionista->co_inversionista ) {
+                $aprobadoPorUserActual = true;
+            }
+        }
+
         $analista_inversion = DB::table('p_usuario')->join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_usuario', 'p_usuario.co_usuario')
                                     ->where('p_solicitud_inversionista.co_persona', Auth::user()->inversionista_id)
                                     ->select(
@@ -77,6 +98,6 @@ class DetalleInmuebleController extends Controller
                 // dd($detalle);
                 
                 
-        return view('giapp.inicio.detalle', compact('detalle', 'distritos', 'imagenes', 'analista_inversion'));
+        return view('giapp.inicio.detalle', compact('detalle', 'distritos', 'imagenes', 'analista_inversion', 'aprobadoPorUserActual'));
     }
 }

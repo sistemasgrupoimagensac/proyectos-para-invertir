@@ -11,8 +11,8 @@
     position: relative;
 }
 .cajamegusta{
-    position: absolute;
-    right: 20px;
+    position: relative;
+    /* right: 20px; */
 }
 .btnmaps{
     display: inline  !important;
