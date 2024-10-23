@@ -645,21 +645,21 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-    // Agregar eventos a los botones "Aprobar proyecto"
-    const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto');
-    $btnsAceptarProyecto.forEach($btnAceptarProyecto => {
-        const codProyecto = $btnAceptarProyecto.getAttribute('data-co-prestamoAceptar');
-        agregarEventoAceptarProyecto(codProyecto);
-    });
+    /* document.addEventListener('DOMContentLoaded', function() {
+        // Agregar eventos a los botones "Aprobar proyecto"
+        const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto');
+        $btnsAceptarProyecto.forEach($btnAceptarProyecto => {
+            const codProyecto = $btnAceptarProyecto.getAttribute('data-co-prestamoAceptar');
+            agregarEventoAceptarProyecto(codProyecto);
+        });
 
-    // Agregar eventos a los botones "Desaprobar proyecto"
-    const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto');
-    $btnsDesaprobarProyecto.forEach($btnDesaprobarProyecto => {
-        const codProyecto = $btnDesaprobarProyecto.getAttribute('data-co-prestamoDesaprobar');
-        agregarEventoDesaprobarProyecto(codProyecto);
-    });
-});
+        // Agregar eventos a los botones "Desaprobar proyecto"
+        const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto');
+        $btnsDesaprobarProyecto.forEach($btnDesaprobarProyecto => {
+            const codProyecto = $btnDesaprobarProyecto.getAttribute('data-co-prestamoDesaprobar');
+            agregarEventoDesaprobarProyecto(codProyecto);
+        });
+    }); */
 
 </script>
 </body>

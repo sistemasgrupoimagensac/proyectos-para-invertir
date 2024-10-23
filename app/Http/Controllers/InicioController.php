@@ -233,7 +233,7 @@ class InicioController extends Controller
                     'http_code' => 400,
                     'message'   => "No se puede desestimar el proyecto, esta aceptado por otra persona.",
                     'status'    => "Error",
-                ], 403);
+                ]);
             }
             
             $prestamo = PPrestamo::join('p_solicitud_prestamo', 'p_prestamo.co_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo')
@@ -378,9 +378,9 @@ class InicioController extends Controller
         if ( $prestamo_inversion ) {
             return response()->json([
                 'http_code' => 400,
-                'message'   => "No se puede desvincular el proyecto por el tiempo desde que se aprobó, por favor comuníquese con su analista.",
+                'message'   => "Nota: El tiempo para desvincular el proyecto es de 5 minutos luego de haberlo aprobado, comuníquese con su analista para revertir la aprobación.",
                 'status'    => "Error",
-            ], 403);
+            ]);
         }
 
         // Validar que el proyecto no este asignado
@@ -395,7 +395,7 @@ class InicioController extends Controller
                 'http_code' => 400,
                 'message'   => "No se puede desestimar el proyecto, esta aceptado por otra persona.",
                 'status'    => "Error",
-            ], 403);
+            ]);
         }
 
         try {
