@@ -231,7 +231,7 @@ class InicioController extends Controller
             if ( $proyectoAsignado ) {
                 return response()->json([
                     'http_code' => 400,
-                    'message'   => "No se puede desestimar el proyecto, esta aceptado por otra persona.",
+                    'message'   => "No se puede vincular el proyecto, esta aceptado por otra persona.",
                     'status'    => "Error",
                 ]);
             }
