@@ -7,6 +7,7 @@ use App\HAuditoria;
 use App\HEstadoPrestamo;
 use App\HOcurrenciaPrestamo;
 use App\MeInteresa;
+use App\PInversionista;
 use App\PNotificacion;
 use App\PPersona;
 use App\PPrestamo;
@@ -275,6 +276,15 @@ class InicioController extends Controller
                 'nu_porcentaje'       => 100,
                 'co_usuario_modifica' => null,
                 'fe_usuario_modifica' => now()
+            ]);
+
+            $inversionista_gestor = PInversionista::join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_solicitud_inversionista', 'p_inversionista.co_solicitud_inversionista')
+                ->where('co_inversionista', $p_inversionista->co_inversionista)
+                ->select('p_solicitud_inversionista.co_usuario as gestor')
+            ->first();
+            
+            PPrestamo::where('co_prestamo', $request->codigo_prestamo)->update([
+                'co_usuario_inversion' => $inversionista_gestor->gestor
             ]);
 
             if ($prestamo->co_unico_prestamo == '') {
