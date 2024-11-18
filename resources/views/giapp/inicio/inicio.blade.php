@@ -333,7 +333,7 @@
             @if ( $item->co_ocurrencia_actual == 34 )
                 @if ( $item->aprobadoPorUserActual )
                     <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
-                        <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span> 
+                        <span style="display: inline-block; white-space: pre-line">Aprobado</span> 
                         <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="{{ $item->co_prestamo }}">
                             <img src="{{ asset('img/desaproved.png') }}" style="height: 3rem;" alt="Desaprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
                         </a>
@@ -347,6 +347,7 @@
                     </a>
                 </p>
             @endif
+            <p class="pt-2">Aprobados: {{ $total_aprobados[$item->co_prestamo] ?? 0 }}</p>
         </div>
     </div>
     @endforeach

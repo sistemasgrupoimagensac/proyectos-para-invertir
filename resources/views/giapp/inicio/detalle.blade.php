@@ -260,7 +260,7 @@
                             <img src="/img/vector/formicon.svg" alt="">
                             <span class="ms-3 fs-3 fw-bold">Contacta su <br>Analista</span>
                         </div>
-                        <textarea class="form-control mb-3" id="mensaje_form_detalle" rows="10">Hola, me interesa invertir en el proyecto con código de solicitud: {{ $detalle->co_unico_solicitud }}, ubicado en: {{ $detalle->no_provincia }} - {{ $detalle->no_distrito }} y con monto de financiamiento: {{$detalle->nc_tipo_moneda}} {{ number_format($detalle->nu_total_solicitado, 2) }}</textarea>
+                        <textarea style="font-size: 0.8rem;" class="form-control mb-3" id="mensaje_form_detalle" rows="6">Hola, me interesa invertir en el proyecto con código de solicitud: {{ $detalle->co_unico_solicitud }}, ubicado en: {{ $detalle->no_provincia }} - {{ $detalle->no_distrito }} y con monto de financiamiento: {{$detalle->nc_tipo_moneda}} {{ number_format($detalle->nu_total_solicitado, 2) }}</textarea>
                         <button id="btn_form_detalle" type="button" class="btn btn-block btn-primary mb-4 p-2" onclick="enviarMensajeWhts()">Enviar</button>
                         <span style="text-transform: capitalize;">{{ mb_strtolower($analista_inversion->analista_nombre ?? '', 'UTF-8') }}</span><br>
                         <div class="mt-2">
