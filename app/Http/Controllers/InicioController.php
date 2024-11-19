@@ -278,7 +278,7 @@ class InicioController extends Controller
                 ];
             } else {
                 // Validar que el proyecto no este asignado
-                $proyectoAsignado = RPrestamoInversionista::where([
+                /* $proyectoAsignado = RPrestamoInversionista::where([
                         'co_prestamo' => $request->codigo_prestamo,
                         'in_estado'   => 1,
                     ])
@@ -290,7 +290,7 @@ class InicioController extends Controller
                         'message'   => "No se puede vincular el proyecto, esta aceptado por otra persona.",
                         'status'    => "Error",
                     ]);
-                }
+                } */
     
                 HOcurrenciaPrestamo::create([
                     'co_ocurrencia'       => 34,
