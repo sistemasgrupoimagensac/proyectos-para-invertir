@@ -335,7 +335,7 @@
                     <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
                         {{-- <span style="display: inline-block; white-space: pre-line">Aprobado</span>  --}}
                         {{-- <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="{{ $item->co_prestamo }}"> --}}
-                            <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar" style="margin: 0 20px 20px 0; cursor: pointer;">
+                            <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar">
                         {{-- </a> --}}
                     </p>
                 {{-- @endif --}}
@@ -343,7 +343,7 @@
                 <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem; margin-bottom: 0px;" class="pt-4" >
                     {{-- <span style="display: inline-block; white-space: pre-line">Aprobar<br>proyecto</span>  --}}
                     <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="{{ $item->co_prestamo }}">
-                        <img src="{{ asset('img/proyecto-aprobar.png') }}" style="height: 3rem;" alt="Aprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                        <img src="{{ asset('img/proyecto-aprobar.png') }}" style="height: 3rem;" alt="Aprobar">
                     </a>
                 </p>
             @endif
@@ -567,39 +567,42 @@
         if ($btnAceptarProyecto) {
             $btnAceptarProyecto.addEventListener('click', function(event) {
                 event.preventDefault();
-                $btnAceptarProyecto.disabled = true;
+                $btnAceptarProyecto.style.pointerEvents = 'none';
+                $btnAceptarProyecto.style.opacity = '0.6';
                 aceptarProyecto(codProyecto);
             });
         }
     };
 
-    const aceptarProyecto = codProyecto => {
+    const aceptarProyecto = (codProyecto, $btnAceptarProyecto) => {
         axios.post('/aceptar-proyecto', {
             codigo_prestamo: codProyecto,
         })
         .then(function (response) {
 
             if ( response.data.http_code === 200 ) {
-                const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
+                // const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
                 const $contenedorBoton = $btnAceptarProyecto.closest('p');
                 // <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span> 
                 // <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="${codProyecto}">
                     // </a>
                     const nuevoBotonHTML = `
                     <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
-                        <img src="${window.location.origin}/img/proyecto-aprobado.png" style="height: 3rem;" alt="Desaprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                        <img src="${window.location.origin}/img/proyecto-aprobado.png" style="height: 3rem;" alt="Desaprobar">
                     </p>
                 `;
                 $contenedorBoton.outerHTML = nuevoBotonHTML;
-                agregarEventoDesaprobarProyecto(codProyecto);
+                // agregarEventoDesaprobarProyecto(codProyecto);
             } else {
                 alert( response.data.message )
-                $btnAceptarProyecto.disabled = false;
+                $btnAceptarProyecto.style.pointerEvents = '';
+                $btnAceptarProyecto.style.opacity = '';
             }
         })
         .catch(function (error) {
             console.error('Error al aprobar el proyecto:', error);
-            $btnAceptarProyecto.disabled = false;
+            $btnAceptarProyecto.style.pointerEvents = '';
+            $btnAceptarProyecto.style.opacity = '';
         });
     }
 
@@ -616,7 +619,7 @@
                 const nuevoBotonHTML = `
                     <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
                         <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="${codProyecto}">
-                            <img src="${window.location.origin}/img/proyecto-aprobar.png" style="height: 3rem;" alt="Aprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
+                            <img src="${window.location.origin}/img/proyecto-aprobar.png" style="height: 3rem;">
                         </a>
                     </p>
                 `;
@@ -636,8 +639,9 @@
         $btnAceptarProyecto.addEventListener('click', function() {
             event.preventDefault();
             const $codigoProyecto = this.getAttribute('data-co-prestamoAceptar')
-            $btnAceptarProyecto.disabled = true;
-            aceptarProyecto($codigoProyecto)
+            $btnAceptarProyecto.style.pointerEvents = 'none';
+            $btnAceptarProyecto.style.opacity = '0.6';
+            aceptarProyecto($codigoProyecto, $btnAceptarProyecto)
         });
     });
 

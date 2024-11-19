@@ -278,19 +278,29 @@ class InicioController extends Controller
                 ];
             } else {
                 // Validar que el proyecto no este asignado
-                /* $proyectoAsignado = RPrestamoInversionista::where([
+                $proyectoAsignado = RPrestamoInversionista::where([
                         'co_prestamo' => $request->codigo_prestamo,
                         'in_estado'   => 1,
                     ])
                     ->where('co_inversionista', '!=', $p_inversionista->co_inversionista)
                 ->first();
                 if ( $proyectoAsignado ) {
-                    return response()->json([
-                        'http_code' => 400,
-                        'message'   => "No se puede vincular el proyecto, esta aceptado por otra persona.",
-                        'status'    => "Error",
+                    InversionistaProyecto::create([
+                        'prestamo_id' => $request->codigo_prestamo,
+                        'persona_id' => Auth::user()->inversionista_id,
+                        'prioridad' => 1,
+                        'estado' => 1,
                     ]);
-                } */
+                    // $analista->email
+                    Mail::to($p_inversionista->no_correo_electronico)->cc("pherrera@360creative.pe")->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, 2));
+
+                    return response()->json([
+                        'http_code' => 200,
+                        'message'   => "Proyecto aprobado correctamente.",
+                        'detail'    => "Estas en cola para el proyecto, eres el número: 2.",
+                        'status'    => "Success",
+                    ]);
+                }
     
                 HOcurrenciaPrestamo::create([
                     'co_ocurrencia'       => 34,
