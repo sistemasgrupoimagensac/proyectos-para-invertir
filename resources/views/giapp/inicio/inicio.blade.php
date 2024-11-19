@@ -593,6 +593,8 @@
                 `;
                 $contenedorBoton.outerHTML = nuevoBotonHTML;
                 // agregarEventoDesaprobarProyecto(codProyecto);
+                // sendWsp(response.data.analista)
+                sendWsp(response.data.co_unico, 970489279)
             } else {
                 alert( response.data.message )
                 $btnAceptarProyecto.style.pointerEvents = '';
@@ -604,6 +606,13 @@
             $btnAceptarProyecto.style.pointerEvents = '';
             $btnAceptarProyecto.style.opacity = '';
         });
+    }
+
+    function sendWsp(codigo_unico, phoneNumber) {
+        const fullMessage = `Acabo de aprobar el proyecto con código único ${codigo_unico} por favor tu ayuda.`;
+        var encodedMessage = encodeURIComponent(fullMessage);
+        const url = `https://wa.me/+51${phoneNumber}?text=${encodedMessage}`;
+        window.open(url, '_blank');
     }
 
     const desaprobarProyecto = codProyecto => {

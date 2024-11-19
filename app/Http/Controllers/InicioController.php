@@ -273,8 +273,10 @@ class InicioController extends Controller
                 $response = [
                     'http_code' => 200,
                     'message'   => "Proyecto aprobado correctamente.",
-                    'detail'   => "Estas en cola para el proyecto, eres el número: $prioridad.",
+                    'detail'    => "Estas en cola para el proyecto, eres el número: $prioridad.",
                     'status'    => "Success",
+                    'analista'  => $analista->nu_celular_trabajo,
+                    'co_unico'  => $prestamo->co_unico_solicitud,
                 ];
             } else {
                 // Validar que el proyecto no este asignado
@@ -285,12 +287,6 @@ class InicioController extends Controller
                     ->where('co_inversionista', '!=', $p_inversionista->co_inversionista)
                 ->first();
                 if ( $proyectoAsignado ) {
-                    InversionistaProyecto::create([
-                        'prestamo_id' => $request->codigo_prestamo,
-                        'persona_id' => Auth::user()->inversionista_id,
-                        'prioridad' => 1,
-                        'estado' => 1,
-                    ]);
                     // $analista->email
                     Mail::to($p_inversionista->no_correo_electronico)->cc("pherrera@360creative.pe")->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, 2));
 
@@ -299,6 +295,8 @@ class InicioController extends Controller
                         'message'   => "Proyecto aprobado correctamente.",
                         'detail'    => "Estas en cola para el proyecto, eres el número: 2.",
                         'status'    => "Success",
+                        'analista'  => $analista->nu_celular_trabajo,
+                        'co_unico'  => $prestamo->co_unico_solicitud,
                     ]);
                 }
     
@@ -393,6 +391,8 @@ class InicioController extends Controller
                     'http_code' => 200,
                     'message'   => "Proyecto aprobado correctamente.",
                     'status'    => "Success",
+                    'analista'  => $analista->nu_celular_trabajo,
+                    'co_unico'  => $prestamo->co_unico_solicitud,
                 ];
             }
             
@@ -401,7 +401,7 @@ class InicioController extends Controller
             
         } catch (\Exception $e) {
 
-            Log::error('Error al asignar el proyecto: ' . $e->getMessage());
+            // Log::error('Error al asignar el proyecto: ' . $e->getMessage());
             $response = [
                 'http_code' => 400,
                 'message'   => "Error al asignar el proyecto: " . $e->getMessage(),
@@ -489,7 +489,7 @@ class InicioController extends Controller
             
         } catch (\Exception $e) {
 
-            Log::error('Error al asignar el proyecto: ' . $e->getMessage());
+            // Log::error('Error al asignar el proyecto: ' . $e->getMessage());
             $response = [
                 'http_code' => 400,
                 'message'   => "Error al asignar el proyecto: " . $e->getMessage(),
