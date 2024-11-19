@@ -26,7 +26,7 @@ class NotificacionProyectoAprobado extends Mailable
 
     public function build()
     {
-        return $this->subject('Proyecto aprobado - Proyectos para Invertir')
+        return $this->subject('Proyecto aprobado, código '. $this->co_unico_solicitud)
             ->view('emails.proyecto-aprobado')
             ->with([
                 'co_unico_solicitud'    => $this->co_unico_solicitud,

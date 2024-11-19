@@ -9,10 +9,10 @@
         <p>Estimad@ {{ $inversionista }},</p>
 
         <p>Nos complace informarle que ha aprobado el proyecto con código "{{ $co_unico_solicitud }}".</p>
-        
-        <p>Asimismo, le comunicamos que entró a la cola con número **{{ $prioridad }}** para continuar con los pasos siguientes. Para ello, le sugerimos consultar con su analista, **{{ $analista }}**, quien está copiado en este correo y disponible para apoyarlo en cada etapa del proceso operativo.</p>
-        
-        <p>Le recomendamos ponerse en contacto con su analista de manera directa para coordinar y avanzar con el flujo operativo correspondiente.</p>
+
+        <p>Asimismo, le informamos que su proyecto ha ingresado a la cola con el número <strong>{{ $prioridad }}</strong> para continuar con los siguientes pasos. Le sugerimos consultar con su analista asignado, <strong>{{ $analista }}</strong>, quien está copiado en este correo y disponible para apoyarlo en cada etapa del proceso operativo.</p>
+
+        <p>Recomendamos que se comunique directamente con su analista para coordinar y avanzar con el flujo operativo correspondiente.</p>
         {{-- <br> --}}
         {{-- <a href="https://proyectosparainvertir.ginversiones.pe/detalle/{{ $co_solicitud_prestamo }}" class="btn btn-primary">Ir al proyecto</a> --}}
         <br> <br>

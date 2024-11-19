@@ -39,7 +39,7 @@ class NotificacionProyectoAprobadoCola extends Mailable
     public function build()
     {
         return $this->view('emails.proyecto-aprobado-cola')
-            ->subject('El Proyecto con código ' . $this->co_unico_solicitud . ' a sido aprobado por usted.')
+            ->subject('El proyecto con código ' . $this->co_unico_solicitud . ' ha sido aprobado y ahora está en la cola con el número de espera ' . $this->prioridad . '.')
             ->with([
                 'co_unico_solicitud'    => $this->co_unico_solicitud,
                 'inversionista'         => $this->inversionista,
