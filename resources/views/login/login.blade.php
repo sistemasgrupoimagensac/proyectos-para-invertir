@@ -33,10 +33,10 @@
                             <input type="email" class="form-control" name="email" value="{{ old('email') }}" required autocomplete="email" id="email" placeholder="Usuario">
                         </div>
                         <div class="input-group input-group-flat">
-                            <input type="password" class="form-control" placeholder="Your password" name="password" required autocomplete="current-password" autocomplete="off">
+                            <input type="password" class="form-control" placeholder="Contraseña" name="password" id="password" required autocomplete="current-password" autocomplete="off">
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" data-bs-toggle="tooltip" aria-label="Show password" data-bs-original-title="Show password"><!-- Download SVG icon from http://tabler-icons.io/i/eye -->
-                                    <img src="img/Capa_1.png" alt="">
+                                <a href="#" class="link-secondary" id="togglePassword">
+                                    <img src="img/mostrar-password.png" alt="Mostrar contraseña" id="togglePasswordIcon">
                                 </a>
                             </span>
                         </div>
@@ -62,6 +62,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+    const togglePasswordIcon = document.querySelector('#togglePasswordIcon');
+
+    togglePassword.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+
+        if (type === 'password') {
+            togglePasswordIcon.setAttribute('src', 'img/mostrar-password.png');
+            togglePasswordIcon.setAttribute('alt', 'Mostrar contraseña');
+            togglePassword.setAttribute('aria-label', 'Mostrar contraseña');
+            togglePassword.setAttribute('data-bs-original-title', 'Mostrar contraseña');
+        } else {
+            togglePasswordIcon.setAttribute('src', 'img/ocultar-password.png');
+            togglePasswordIcon.setAttribute('alt', 'Ocultar contraseña');
+            togglePassword.setAttribute('aria-label', 'Ocultar contraseña');
+            togglePassword.setAttribute('data-bs-original-title', 'Ocultar contraseña');
+        }
+    });
+
+</script>
     
 </body>
 </html>

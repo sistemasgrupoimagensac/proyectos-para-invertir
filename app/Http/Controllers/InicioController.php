@@ -111,18 +111,17 @@ class InicioController extends Controller
         $solicitantesprocesados = $solicitantes->map(function($solicitante){
             $solicitante->interesado = null;
             $solicitante->aprobadoPorUserActual = false;
-            /* if ( $solicitante->co_ocurrencia_actual == 34 ) {
-                $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
-                    ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
-                    ->where('soli.in_estado', 1)
-                    ->where('p_persona.in_estado', 1)
-                    ->where('p_persona.co_persona', Auth::user()->inversionista_id)
-                    ->select('pi.co_inversionista')
-                ->first();
-                if ( $p_inversionista && $solicitante->co_inversionista == $p_inversionista->co_inversionista ) {
-                    $solicitante->aprobadoPorUserActual = true;
-                }
-            } */
+
+            $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
+                ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
+                ->where('soli.in_estado', 1)
+                ->where('p_persona.in_estado', 1)
+                ->where('p_persona.co_persona', Auth::user()->inversionista_id)
+                ->select('pi.co_inversionista')
+            ->first();
+            if ( $p_inversionista && $solicitante->co_inversionista == $p_inversionista->co_inversionista ) {
+                $solicitante->aprobadoPorUserActual = true;
+            }
             
             $inversionista_proyecto = InversionistaProyecto::where([
                     'prestamo_id' => $solicitante->co_prestamo,

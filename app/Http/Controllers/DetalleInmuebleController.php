@@ -72,18 +72,17 @@ class DetalleInmuebleController extends Controller
         }
 
         $aprobadoPorUserActual = false;
-        /* if ( $detalle->co_ocurrencia_actual == 34 ) {
-            $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
-                ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
-                ->where('soli.in_estado', 1)
-                ->where('p_persona.in_estado', 1)
-                ->where('p_persona.co_persona', Auth::user()->inversionista_id)
-                ->select('pi.co_inversionista')
-            ->first();
-            if ( $p_inversionista && $detalle->co_inversionista == $p_inversionista->co_inversionista ) {
-                $aprobadoPorUserActual = true;
-            }
-        } */
+        $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
+            ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
+            ->where('soli.in_estado', 1)
+            ->where('p_persona.in_estado', 1)
+            ->where('p_persona.co_persona', Auth::user()->inversionista_id)
+            ->select('pi.co_inversionista')
+        ->first();
+        if ( $p_inversionista && $detalle->co_inversionista == $p_inversionista->co_inversionista ) {
+            $aprobadoPorUserActual = true;
+        }
+
         $inversionista_proyecto = InversionistaProyecto::where([
                 'prestamo_id' => $detalle->co_prestamo,
                 'persona_id'  => Auth::user()->inversionista_id,
@@ -91,7 +90,7 @@ class DetalleInmuebleController extends Controller
             ])
         ->first('prioridad');
         if ( $inversionista_proyecto ) {
-            $aprobadoPorUserActual;
+            $aprobadoPorUserActual = true;
         }
 
         $analista_inversion = DB::table('p_usuario')->join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_usuario', 'p_usuario.co_usuario')
