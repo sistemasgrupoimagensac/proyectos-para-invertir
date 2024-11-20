@@ -330,24 +330,20 @@
                 <input type="hidden" value="{{ $item->co_prestamo }}" name="co_prestamo">
                 <p class="pt-2">Interesados: {{ $totalLikesPorPrestamo[$item->co_prestamo] ?? 0 }}</p>
             </div>
-            {{-- @if ( $item->co_ocurrencia_actual == 34 ) --}}
             @if ( $item->aprobadoPorUserActual )
-                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
-                        {{-- <span style="display: inline-block; white-space: pre-line">Aprobado</span>  --}}
-                        {{-- <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="{{ $item->co_prestamo }}"> --}}
-                            <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar">
-                        {{-- </a> --}}
-                    </p>
-                {{-- @endif --}}
+                <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
+                    <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar">
+                </p>
             @else
                 <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem; margin-bottom: 0px;" class="pt-4" >
-                    {{-- <span style="display: inline-block; white-space: pre-line">Aprobar<br>proyecto</span>  --}}
                     <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="{{ $item->co_prestamo }}">
                         <img src="{{ asset('img/proyecto-aprobar.png') }}" style="height: 3rem;" alt="Aprobar">
                     </a>
                 </p>
             @endif
-            <p style="position:relative; right:1rem;">Aprobados: {{ $total_aprobados[$item->co_prestamo] ?? 0 }}</p>
+            <p style="position:relative; right: 3rem; font-size: 0.8rem;" class="cont_aprobados" data-co_prestamo="{{ $item->co_prestamo }}">
+                Cant. de aprobaciones: {{ $total_aprobados[$item->co_prestamo] ?? 0 }}
+            </p>
         </div>
     </div>
     @endforeach
@@ -569,7 +565,7 @@
                 event.preventDefault();
                 $btnAceptarProyecto.style.pointerEvents = 'none';
                 $btnAceptarProyecto.style.opacity = '0.6';
-                aceptarProyecto(codProyecto);
+                aceptarProyecto(codProyecto, $btnAceptarProyecto);
             });
         }
     };
@@ -581,17 +577,19 @@
         .then(function (response) {
 
             if ( response.data.http_code === 200 ) {
-                // const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
+                const $cont_aprobados = document.querySelector(`.cont_aprobados[data-co_prestamo='${codProyecto}']`);
+                if ( $cont_aprobados ) {
+                    $cont_aprobados.textContent = `Cant. de aprobaciones: ${response.data.total_aprobados}`;
+                }
                 const $contenedorBoton = $btnAceptarProyecto.closest('p');
-                // <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span> 
-                // <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="${codProyecto}">
-                    // </a>
+                if ($contenedorBoton) {
                     const nuevoBotonHTML = `
-                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
-                        <img src="${window.location.origin}/img/proyecto-aprobado.png" style="height: 3rem;" alt="Desaprobar">
-                    </p>
-                `;
-                $contenedorBoton.outerHTML = nuevoBotonHTML;
+                        <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
+                            <img src="${window.location.origin}/img/proyecto-aprobado.png" style="height: 3rem;" alt="Desaprobar">
+                        </p>
+                    `;
+                    $contenedorBoton.outerHTML = nuevoBotonHTML;
+                }
                 // agregarEventoDesaprobarProyecto(codProyecto);
                 // sendWsp(response.data.analista)
                 sendWsp(response.data.co_unico, 970489279)

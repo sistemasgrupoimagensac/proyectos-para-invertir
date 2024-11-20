@@ -109,7 +109,7 @@ class InicioController extends Controller
         $solicitantesprocesados = $solicitantes->map(function($solicitante){
             $solicitante->interesado = null;
             $solicitante->aprobadoPorUserActual = false;
-            if ( $solicitante->co_ocurrencia_actual == 34 ) {
+            /* if ( $solicitante->co_ocurrencia_actual == 34 ) {
                 $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
                     ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
                     ->where('soli.in_estado', 1)
@@ -120,7 +120,18 @@ class InicioController extends Controller
                 if ( $p_inversionista && $solicitante->co_inversionista == $p_inversionista->co_inversionista ) {
                     $solicitante->aprobadoPorUserActual = true;
                 }
+            } */
+            
+            $inversionista_proyecto = InversionistaProyecto::where([
+                    'prestamo_id' => $solicitante->co_prestamo,
+                    'persona_id'  => Auth::user()->inversionista_id,
+                    'estado'      => 1,
+                ])
+            ->first('prioridad');
+            if ( $inversionista_proyecto ) {
+                $solicitante->aprobadoPorUserActual = true;
             }
+
             $like = MeInteresa::where([
                     'co_prestamo'=> $solicitante->co_prestamo,
                     'co_inversionista'=>Auth::user()->id
@@ -236,6 +247,12 @@ class InicioController extends Controller
                 'prioridad' => $prioridad,
                 'estado' => 1,
             ]);
+
+            $total_aprobados = InversionistaProyecto::where([
+                'prestamo_id' => $request->codigo_prestamo,
+                'estado' => 1,
+                ])
+            ->count();
             
             $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
                 ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
@@ -278,7 +295,8 @@ class InicioController extends Controller
                     'analista'  => $analista->nu_celular_trabajo,
                     'co_unico'  => $prestamo->co_unico_solicitud,
                     'prestamo'  => $request->codigo_prestamo,
-                    'persona'  => Auth::user()->inversionista_id,
+                    'persona'   => Auth::user()->inversionista_id,
+                    'total_aprobados' => $total_aprobados,
                 ];
             } else {
                 // Validar que el proyecto no este asignado
@@ -300,7 +318,8 @@ class InicioController extends Controller
                         'analista'  => $analista->nu_celular_trabajo,
                         'co_unico'  => $prestamo->co_unico_solicitud,
                         'prestamo'  => $request->codigo_prestamo,
-                        'persona'  => Auth::user()->inversionista_id,
+                        'persona'   => Auth::user()->inversionista_id,
+                        'total_aprobados' => $total_aprobados,
                     ];
                 } else {
 
@@ -398,11 +417,11 @@ class InicioController extends Controller
                         'analista'  => $analista->nu_celular_trabajo,
                         'co_unico'  => $prestamo->co_unico_solicitud,
                         'prestamo'  => $request->codigo_prestamo,
-                        'persona'  => Auth::user()->inversionista_id,
+                        'persona'   => Auth::user()->inversionista_id,
+                        'total_aprobados' => $total_aprobados,
                     ];
                 }
     
-                
             }
             
             DB::commit();
