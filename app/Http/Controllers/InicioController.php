@@ -83,7 +83,9 @@ class InicioController extends Controller
                 DB::raw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) as imagen_principal")
             )
             ->whereRaw("p_prestamo.co_ocurrencia_actual IN (31, 32, 33, 34, 36)")
-            ->where('p_prestamo.co_condicion_actual', '!=', 58)
+            ->where(function($q) {
+                $q->where('p_prestamo.co_condicion_actual', '!=', 58)->orWhereNull('co_condicion_actual');
+            })   
             ->whereRaw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) IS NOT NULL")
             ->where(function($query)use($request){
                 if($request->distrito){
@@ -170,8 +172,7 @@ class InicioController extends Controller
             )
         ->first();
 
-        $total_aprobados = InversionistaProyecto::where('estado', 1)
-            ->groupBy('prestamo_id')
+        $total_aprobados = InversionistaProyecto::groupBy('prestamo_id')
             ->selectRaw('prestamo_id, count(*) as cantidad_aprobados')
             ->get()
         ->pluck('cantidad_aprobados', 'prestamo_id');
@@ -250,7 +251,7 @@ class InicioController extends Controller
 
             $total_aprobados = InversionistaProyecto::where([
                 'prestamo_id' => $request->codigo_prestamo,
-                'estado' => 1,
+                // 'estado' => 1,
                 ])
             ->count();
             
