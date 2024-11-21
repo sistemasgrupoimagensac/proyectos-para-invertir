@@ -19,7 +19,7 @@
     <div class="container-fluid login-bg d-flex align-items-center justify-content-center">
         <div class="row col-lg-3 col-md-4 col-sm-11">
             <div class="form col-12" data-aos="zoom-in-up">
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login.post') }}">
                     @csrf
                     <div class="tab">
                         <img src="{{ asset('./img/logo.png')}}" class="img-fluid" alt="">

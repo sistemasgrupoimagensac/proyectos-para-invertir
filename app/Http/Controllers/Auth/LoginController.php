@@ -38,6 +38,29 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function login(Request $request)
+    {
+        // Validación de campos
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // Intentar autenticar al usuario
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            // Redirigir al dashboard o donde desees
+            return redirect()->intended($this->redirectPath());
+        }
+
+        // Si falla, regresar al login con error
+        return back()->withErrors([
+            'email' => 'Las credenciales no coinciden con nuestros registros.',
+        ]);
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();

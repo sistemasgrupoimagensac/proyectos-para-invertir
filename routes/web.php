@@ -8,12 +8,14 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\UbicacionController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('login.login');
 })->middleware('guest')->name('login');
 
-Auth::routes();
+// Auth::routes();
+Route::post('/login', [LoginController::class, 'login'])->middleware('guest')->name('login.post');
 
 Route::get('reset-password', [ResetPasswordController::class, 'reset'])->name('reset.password');
 Route::post('enviar-password-reset', [ResetPasswordController::class, 'sendPassword'])->name('enviar-password-reset');
