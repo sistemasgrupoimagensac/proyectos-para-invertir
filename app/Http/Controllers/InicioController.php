@@ -245,7 +245,7 @@ class InicioController extends Controller
                                     ->select('no_completo_persona', 'name', 'p_persona.nu_celular', 'p_usuario.email')
                                     ->first();
 
-        $supervisores = DB::table('p_usuario')->where('in_estado', 1)->where('co_perfil', 12)->select('email')->pluck('email')->toArray();
+        $supervisores = DB::table('p_usuario')->where('in_estado', 1)->where('co_usuario', 42)->select('email')->pluck('email')->toArray();
 
         Mail::to($inversionista->email)
                 ->cc($supervisores)
@@ -377,7 +377,9 @@ class InicioController extends Controller
                 ->where('co_usuario', $inversionista_gestor->gestor)
             ->first();
             $analistas_emails = DB::table('p_usuario')
-                ->where('co_perfil', 12)
+                // ->where('co_perfil', 12)
+                ->where('co_usuario', 42)
+                ->where('in_estado', 1)
                 ->pluck('email')
             ->toArray();
             $analistas_emails[] = $analista->email;
