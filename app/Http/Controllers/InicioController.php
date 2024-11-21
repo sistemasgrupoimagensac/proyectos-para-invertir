@@ -134,6 +134,38 @@ class InicioController extends Controller
                 $solicitante->aprobadoPorUserActual = true;
             }
 
+            // MAX aprobados
+            $solicitante->total_aprobados_proyecto = 0;
+            $co_persona_asignada = 0;
+
+            $proyectoAsignado = RPrestamoInversionista::where([
+                    'co_prestamo' => $solicitante->co_prestamo,
+                    'in_estado'   => 1,
+                ])
+            ->first();
+            if ( $proyectoAsignado ) {
+                $solicitante->total_aprobados_proyecto += 1;
+
+                $persona = RPrestamoInversionista::join('p_inversionista AS pi', 'pi.co_inversionista', 'r_prestamo_inversionista.co_inversionista')
+                    ->join('p_solicitud_inversionista AS soli', 'soli.co_solicitud_inversionista', 'pi.co_solicitud_inversionista')
+                    ->join('p_persona AS p', 'p.co_persona', 'soli.co_persona')
+                    ->where('r_prestamo_inversionista.co_prestamo', $solicitante->co_prestamo)
+                    ->where('r_prestamo_inversionista.in_estado', 1)
+                    ->where('pi.in_estado', 1)
+                    ->where('soli.in_estado', 1)
+                    ->where('p.in_estado', 1)
+                    ->select('p.co_persona')
+                ->first();
+                $co_persona_asignada = $persona->co_persona;
+            }
+            
+            $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $solicitante->co_prestamo)
+                ->where('persona_id', '!=', $co_persona_asignada)
+            ->count();
+            if ( $cant_aprobados_plataforma ) {
+                $solicitante->total_aprobados_proyecto += $cant_aprobados_plataforma;
+            }
+
             $like = MeInteresa::where([
                     'co_prestamo'=> $solicitante->co_prestamo,
                     'co_inversionista'=>Auth::user()->id
@@ -279,11 +311,42 @@ class InicioController extends Controller
                 'estado' => 1,
             ]);
 
-            $total_aprobados = InversionistaProyecto::where([
+            /* $total_aprobados = InversionistaProyecto::where([
                 'prestamo_id' => $request->codigo_prestamo,
                 // 'estado' => 1,
                 ])
+            ->count(); */
+            // MAX aprobados
+            $total_aprobados = 0;
+            $co_persona_asignada = 0;
+
+            $proyectoAsignado = RPrestamoInversionista::where([
+                    'co_prestamo' => $request->codigo_prestamo,
+                    'in_estado'   => 1,
+                ])
+            ->first();
+            if ( $proyectoAsignado ) {
+                $total_aprobados += 1;
+
+                $persona = RPrestamoInversionista::join('p_inversionista AS pi', 'pi.co_inversionista', 'r_prestamo_inversionista.co_inversionista')
+                    ->join('p_solicitud_inversionista AS soli', 'soli.co_solicitud_inversionista', 'pi.co_solicitud_inversionista')
+                    ->join('p_persona AS p', 'p.co_persona', 'soli.co_persona')
+                    ->where('r_prestamo_inversionista.co_prestamo', $request->codigo_prestamo)
+                    ->where('r_prestamo_inversionista.in_estado', 1)
+                    ->where('pi.in_estado', 1)
+                    ->where('soli.in_estado', 1)
+                    ->where('p.in_estado', 1)
+                    ->select('p.co_persona')
+                ->first();
+                $co_persona_asignada = $persona->co_persona;
+            }
+            
+            $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $request->codigo_prestamo)
+                ->where('persona_id', '!=', $co_persona_asignada)
             ->count();
+            if ( $cant_aprobados_plataforma ) {
+                $total_aprobados += $cant_aprobados_plataforma;
+            }
             
             $p_inversionista = PPersona::join('p_solicitud_inversionista AS soli', 'soli.co_persona', 'p_persona.co_persona')
                 ->join('p_inversionista AS pi', 'pi.co_solicitud_inversionista', 'soli.co_solicitud_inversionista')
@@ -313,10 +376,23 @@ class InicioController extends Controller
             $analista = DB::table('p_usuario')
                 ->where('co_usuario', $inversionista_gestor->gestor)
             ->first();
+            $analistas_emails = DB::table('p_usuario')
+                ->where('co_perfil', 12)
+                ->pluck('email')
+            ->toArray();
+            $analistas_emails[] = $analista->email;
+
+            $enviar_wsp = false;
+            $parametro = DB::table('parametros')
+                ->where('codigo', 'wsp-plat')
+                ->where('estado', '1')
+            ->first();
+            if ( $parametro ) {
+                $enviar_wsp = true;
+            }
 
             if ( isset($max_prioridad_proyecto) ) {
-                // $analista->email
-                Mail::to($p_inversionista->no_correo_electronico)->cc("pherrera@360creative.pe")->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad));
+                Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad));
 
                 $response = [
                     'http_code' => 200,
@@ -328,6 +404,7 @@ class InicioController extends Controller
                     'prestamo'  => $request->codigo_prestamo,
                     'persona'   => Auth::user()->inversionista_id,
                     'total_aprobados' => $total_aprobados,
+                    'enviar_wsp' => $enviar_wsp,
                 ];
             } else {
                 // Validar que el proyecto no este asignado
@@ -338,8 +415,7 @@ class InicioController extends Controller
                     ->where('co_inversionista', '!=', $p_inversionista->co_inversionista)
                 ->first();
                 if ( $proyectoAsignado ) {
-                    // $analista->email
-                    Mail::to($p_inversionista->no_correo_electronico)->cc("pherrera@360creative.pe")->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, 2));
+                    Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, 2));
 
                     $response = [
                         'http_code' => 200,
@@ -351,6 +427,7 @@ class InicioController extends Controller
                         'prestamo'  => $request->codigo_prestamo,
                         'persona'   => Auth::user()->inversionista_id,
                         'total_aprobados' => $total_aprobados,
+                        'enviar_wsp' => $enviar_wsp,
                     ];
                 } else {
 
@@ -384,7 +461,7 @@ class InicioController extends Controller
                         'fe_usuario_modifica' => now()
                     ]);
     
-                    Mail::to($p_inversionista->no_correo_electronico)->cc("pherrera@360creative.pe")->send(new NotificacionProyectoAprobado($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo));
+                    Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobado($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo));
         
                     if ($prestamo->co_unico_prestamo == '') {
         
@@ -443,13 +520,14 @@ class InicioController extends Controller
         
                     $response = [
                         'http_code' => 200,
-                        'message'   => "Proyecto aprobado correctamente. aaa",
+                        'message'   => "Proyecto aprobado correctamente.",
                         'status'    => "Success",
                         'analista'  => $analista->nu_celular_trabajo,
                         'co_unico'  => $prestamo->co_unico_solicitud,
                         'prestamo'  => $request->codigo_prestamo,
                         'persona'   => Auth::user()->inversionista_id,
                         'total_aprobados' => $total_aprobados,
+                        'enviar_wsp' => $enviar_wsp,
                     ];
                 }
     
