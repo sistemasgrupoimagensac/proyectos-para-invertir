@@ -241,6 +241,22 @@ class InicioController extends Controller
 
             $max_prioridad_proyecto = InversionistaProyecto::where('prestamo_id', $request->codigo_prestamo)->max('prioridad');
             $prioridad = $max_prioridad_proyecto ? $max_prioridad_proyecto + 1 : 1;
+
+            $exist_inversionista = InversionistaProyecto::where([
+                    'prestamo_id' => $request->codigo_prestamo,
+                    'persona_id' => Auth::user()->inversionista_id,
+                    'estado' => 1,
+                ])
+            ->first();
+            if ( $exist_inversionista ) {
+                $response = [
+                    'http_code' => 400,
+                    'message'   => "Usted ya aprobó este proyecto. Refrescar la página.",
+                    'status'    => "Error",
+                ];
+                DB::rollBack();
+                return response()->json($response);
+            }
             InversionistaProyecto::create([
                 'prestamo_id' => $request->codigo_prestamo,
                 'persona_id' => Auth::user()->inversionista_id,
