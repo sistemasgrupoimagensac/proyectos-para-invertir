@@ -234,22 +234,23 @@ class InicioController extends Controller
             $like->fe_modificacion = now();
             $like->save();
         }
+        
+        if ( $like->estado == 1 ) {
+            $prestamo = PPrestamo::join('p_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo', 'p_prestamo.co_solicitud_prestamo')
+                        ->where('co_prestamo', $request->co_prestamo)->select('co_unico_solicitud')->first();
+    
+            $inversionista = PPersona::join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_persona', 'p_persona.co_persona')
+                                        ->join('p_usuario', 'p_usuario.co_usuario', 'p_solicitud_inversionista.co_usuario')
+                                        ->where('p_persona.co_persona', Auth::user()->inversionista_id)
+                                        ->where('p_solicitud_inversionista.in_estado', 1)
+                                        ->select('no_completo_persona', 'name', 'p_persona.nu_celular', 'p_usuario.email')
+                                        ->first();
+            $supervisores = DB::table('p_usuario')->where('in_estado', 1)->where('co_usuario', 42)->select('email')->pluck('email')->toArray();
 
-        $prestamo = PPrestamo::join('p_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo', 'p_prestamo.co_solicitud_prestamo')
-                    ->where('co_prestamo', $request->co_prestamo)->select('co_unico_solicitud')->first();
-
-        $inversionista = PPersona::join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_persona', 'p_persona.co_persona')
-                                    ->join('p_usuario', 'p_usuario.co_usuario', 'p_solicitud_inversionista.co_usuario')
-                                    ->where('p_persona.co_persona', Auth::user()->inversionista_id)
-                                    ->where('p_solicitud_inversionista.in_estado', 1)
-                                    ->select('no_completo_persona', 'name', 'p_persona.nu_celular', 'p_usuario.email')
-                                    ->first();
-
-        $supervisores = DB::table('p_usuario')->where('in_estado', 1)->where('co_usuario', 42)->select('email')->pluck('email')->toArray();
-
-        Mail::to($inversionista->email)
-                ->cc($supervisores)
-                ->send(new NotificarProyectoInteresado($prestamo->co_unico_solicitud, $inversionista->no_completo_persona, $inversionista->name, $inversionista->nu_celular));
+            Mail::to($inversionista->email)
+                    ->cc($supervisores)
+                    ->send(new NotificarProyectoInteresado($prestamo->co_unico_solicitud, $inversionista->no_completo_persona, $inversionista->name, $inversionista->nu_celular));
+        }
 
         $cantidad = MeInteresa::where('co_prestamo', $request->co_prestamo)->where('estado', 1)->count();
 
