@@ -1,5 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+    {{-- <style>
+        .btnAceptarProyecto {
+            display: inline-block;
+            transition: all 0.3s ease;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+    
+        .btnAceptarProyecto:hover {
+            background-color: #f0f0f0;
+            border-color: #007bff;
+            cursor: pointer;
+        }
+    </style> --}}
 
 <head>
     <meta charset="UTF-8">
@@ -342,7 +357,8 @@
                 </p>
             @endif
             <p style="position:relative; right: 3rem; font-size: 0.8rem;" class="cont_aprobados" data-co_prestamo="{{ $item->co_prestamo }}">
-                Cant. de aprobaciones: {{ $total_aprobados[$item->co_prestamo] ?? 0 }}
+                Cant. de aprobaciones: {{ $item->total_aprobados_proyecto }}
+                {{-- Cant. de aprobaciones: {{ $total_aprobados[$item->co_prestamo] ?? 0 }} --}}
             </p>
         </div>
     </div>
@@ -591,8 +607,9 @@
                     $contenedorBoton.outerHTML = nuevoBotonHTML;
                 }
                 // agregarEventoDesaprobarProyecto(codProyecto);
-                // sendWsp(response.data.analista)
-                sendWsp(response.data.co_unico, 970489279)
+                if ( response.data.enviar_wsp ) {
+                    sendWsp(response.data.co_unico, response.data.analista)
+                }
             } else {
                 alert( response.data.message )
                 $btnAceptarProyecto.style.pointerEvents = '';
