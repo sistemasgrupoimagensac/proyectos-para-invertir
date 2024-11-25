@@ -16,6 +16,17 @@
         }
     </style> --}}
 
+    <style>
+        @media only screen and (max-width: 768px) {
+            .btns-proyecto {
+                position: relative!important;
+                display: flex!important;
+                bottom: 10px;
+                justify-content: space-around;
+            }
+        }
+    </style>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,11 +79,11 @@
                     <form action="{{route('inicio')}}">
                         <div class="row  rounded-pill border border-1  p-1">
                             <div class="col-5 d-flex align-items-center">
-                                <select class="js-example-basic-single w-100 border-0" name="distrito">
+                                <select class="js-example-basic-single w-100 border-0" name="provincia">
                                     <option value="" selected>Buscar por provincia</option>
-                                    @foreach($distritos as $item)
-                                        <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                            {{ $item->no_distrito }}
+                                    @foreach($provincias as $item)
+                                        <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
+                                            {{ $item->no_provincia }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -201,11 +212,11 @@
                         </button>
                     </div>
                     <div class="col-10">
-                        <select class="js-example-basic-single w-100 border-0" name="distrito">
+                        <select class="js-example-basic-single w-100 border-0" name="provincia">
                             <option value="" selected>Buscar por provincia</option>
-                            @foreach($distritos as $item)
-                                <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                    {{ $item->no_distrito }}
+                            @foreach($provincias as $item)
+                                <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
+                                    {{ $item->no_provincia }}
                                 </option>
                             @endforeach
                         </select>
@@ -307,30 +318,32 @@
                 </a>
             </div>
             <div class="col-lg-8">
-                <div class="card-body h-100 p-0 d-flex flex-column justify-content-between p-4">
-                    <span class="text-start">{{ $item->co_unico_solicitud }}</span>
-                    <p class="m-0 mb-3 fw-bold">{{ $item->no_tipo_garantia }}</p>
-                    <h3 class="card-title fw-bold text-with-overflow card-inmueble-title text-start">
-                        <img class="icono-ubicacion img-producto" src="img/vector/Ubicacion.png" alt="">
-                        <span>{{ $item->no_distrito}}</span>
-                    </h3>
-                    <p class="m-0">
-                        <strong>Tasa de Interés Mensual:</strong>
-                        <span>{{ (float) $item->nu_tasa_interes_mensual }}%</span>
-                    </p>
-                    <p class="m-0"><strong>Plazo de Finanaciamiento: </strong>{{$item->no_tiempo_pago}}</p>
-                    <p class="m-0"><strong>Tipo de Financiamiento: </strong>{{ $item->no_forma_pago}}</p>
-                    <p class="m-0"><strong>Valor Comercial del Inmueble: </strong>{{$item->tipo_moneda_dato_prestamo}} {{ number_format($item->valor_comercial_inmueble ?? 0, 2) }}</p>
-                    <div class="d-flex justify-content-end">
-                        <div class="col-auto text-end">
-                            <span>Monto de financiamiento</span><br>
-                            <span class="card-monto-financiamiento fw-bold">{{$item->nc_tipo_moneda}} {{ number_format($item->nu_total_solicitado ?? 0, 2) }}</span>
+                <a href="{{ route('detalle', ['co_solicitud_prestamo' => $item->co_solicitud_prestamo]) }}" class="text-decoration-none text-reset">
+                    <div class="card-body h-100 p-0 d-flex flex-column justify-content-between p-4">
+                        <span class="text-start">{{ $item->co_unico_solicitud }}</span>
+                        <p class="m-0 mb-3 fw-bold">{{ $item->no_tipo_garantia }}</p>
+                        <h3 class="card-title fw-bold text-with-overflow card-inmueble-title text-start">
+                            <img class="icono-ubicacion img-producto" src="img/vector/Ubicacion.png" alt="">
+                            <span>{{ $item->no_distrito}}</span>
+                        </h3>
+                        <p class="m-0">
+                            <strong>Tasa de Interés Mensual:</strong>
+                            <span>{{ (float) $item->nu_tasa_interes_mensual }}%</span>
+                        </p>
+                        <p class="m-0"><strong>Plazo de Finanaciamiento: </strong>{{$item->no_tiempo_pago}}</p>
+                        <p class="m-0"><strong>Tipo de Financiamiento: </strong>{{ $item->no_forma_pago}}</p>
+                        <p class="m-0"><strong>Valor Comercial del Inmueble: </strong>{{$item->tipo_moneda_dato_prestamo}} {{ number_format($item->valor_comercial_inmueble ?? 0, 2) }}</p>
+                        <div class="d-flex justify-content-end">
+                            <div class="col-auto text-end">
+                                <span>Monto de financiamiento</span><br>
+                                <span class="card-monto-financiamiento fw-bold">{{$item->nc_tipo_moneda}} {{ number_format($item->nu_total_solicitado ?? 0, 2) }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
-        <div style="position: absolute; top:0px; right:0px" >
+        <div style="position: absolute; top:0px; right:0px" class="btns-proyecto">
             <div style="position:relative" class="heart text-center likeButton" data-co-prestamo="{{ $item->co_prestamo }}">
                 @if($item->interesado)
                     @if($item->interesado->estado == 0)
@@ -345,6 +358,7 @@
                 <input type="hidden" value="{{ $item->co_prestamo }}" name="co_prestamo">
                 <p class="pt-2">Interesados: {{ $totalLikesPorPrestamo[$item->co_prestamo] ?? 0 }}</p>
             </div>
+            <div>
             @if ( $item->aprobadoPorUserActual )
                 <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
                     <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar">
@@ -360,6 +374,7 @@
                 Cant. de aprobaciones: {{ $item->total_aprobados_proyecto }}
                 {{-- Cant. de aprobaciones: {{ $total_aprobados[$item->co_prestamo] ?? 0 }} --}}
             </p>
+            </div>
         </div>
     </div>
     @endforeach
@@ -441,6 +456,7 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/jQuery.headroom.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function() {
@@ -610,6 +626,7 @@
                 if ( response.data.enviar_wsp ) {
                     sendWsp(response.data.co_unico, response.data.analista)
                 }
+                Swal.fire("¡Aprobado!", "", "success");
             } else {
                 alert( response.data.message )
                 $btnAceptarProyecto.style.pointerEvents = '';
@@ -662,10 +679,26 @@
     $btnsAceptarProyecto.forEach( ($btnAceptarProyecto) => {
         $btnAceptarProyecto.addEventListener('click', function() {
             event.preventDefault();
-            const $codigoProyecto = this.getAttribute('data-co-prestamoAceptar')
-            $btnAceptarProyecto.style.pointerEvents = 'none';
-            $btnAceptarProyecto.style.opacity = '0.6';
-            aceptarProyecto($codigoProyecto, $btnAceptarProyecto)
+
+            Swal.fire({
+            title: "¿Estás seguro de aprobar el proyecto?",
+            // showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Si, estoy seguro.",
+            denyButtonText: `No`
+            }).then((result) => {
+            if (result.isConfirmed) {
+
+                const $codigoProyecto = this.getAttribute('data-co-prestamoAceptar')
+                $btnAceptarProyecto.style.pointerEvents = 'none';
+                $btnAceptarProyecto.style.opacity = '0.6';
+                aceptarProyecto($codigoProyecto, $btnAceptarProyecto)
+
+            } else if (result.isDenied) {
+                Swal.fire("Estuvo cerca", "", "info");
+            }
+            });
+
         });
     });
 

@@ -29,7 +29,8 @@ class InicioController extends Controller
 
     public function index(Request $request){
                
-        $distritos = DB ::table('p_distrito')->select('co_distrito','no_distrito')->get();
+        // $distritos = DB::table('p_distrito')->select('co_distrito','no_distrito')->get();
+        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->get();
         $ubicacion = $request->distritos;
         $monto = $request->monto;
      
@@ -46,6 +47,7 @@ class InicioController extends Controller
             ->join('a_estado', 'p_prestamo.co_estado', 'a_estado.co_estado')
             ->leftJoin('p_cartera', 'p_prestamo.co_prestamo', 'p_cartera.co_prestamo')
             ->leftJoin('p_distrito', 'p_distrito.co_distrito', 'p_solicitud_prestamo.co_distrito')
+            ->leftJoin('h_provincia', 'h_provincia.co_provincia', 'p_distrito.co_provincia')
             ->leftJoin('a_tipo_credito', 'p_solicitud_prestamo.co_tipo_credito', 'a_tipo_credito.co_tipo_credito')
             ->leftJoin('a_tipo_garantia','p_solicitud_prestamo.co_tipo_garantia','a_tipo_garantia.co_tipo_garantia')
             ->leftJoin('a_tipo_cliente','p_prestamo.co_tipo_cliente','a_tipo_cliente.co_tipo_cliente')
@@ -89,8 +91,8 @@ class InicioController extends Controller
             })   
             ->whereRaw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) IS NOT NULL")
             ->where(function($query)use($request){
-                if($request->distrito){
-                    $query->where('p_distrito.co_distrito',$request->distrito);
+                if($request->provincia){
+                    $query->where('h_provincia.co_provincia',$request->provincia);
                 }
             })
             ->where(function ($query) use ($request) {
@@ -106,7 +108,7 @@ class InicioController extends Controller
             ->orderBy('fe_solicitud_prestamo','desc')
         ->get();
 
-        session(['distrito' => $request->input('distrito')]);
+        session(['provincia' => $request->input('provincia')]);
         session(['monto' => $request->input('monto')]);
 
         $solicitantesprocesados = $solicitantes->map(function($solicitante){
@@ -209,7 +211,7 @@ class InicioController extends Controller
             ->get()
         ->pluck('cantidad_aprobados', 'prestamo_id');
 
-        return view('giapp.inicio.inicio', compact('solicitantesprocesados', 'distritos','totalLikesPorPrestamo','ubicacion', 'monto', 'analista', 'total_aprobados'));
+        return view('giapp.inicio.inicio', compact('solicitantesprocesados', 'provincias','totalLikesPorPrestamo','ubicacion', 'monto', 'analista', 'total_aprobados'));
     }
 
     public function meInteresa(Request $request)
