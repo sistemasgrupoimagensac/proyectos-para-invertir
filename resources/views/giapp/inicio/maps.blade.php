@@ -59,9 +59,9 @@
                             <div class="col-5 d-flex align-items-center">
                                 <select class="js-example-basic-single border-0 w-100" name="distrito">
                                     <option value="" selected>Buscar por provincia</option>
-                                    @foreach($distritos as $item)
-                                        <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                            {{ $item->no_distrito }}
+                                    @foreach($provincias as $item)
+                                        <option value="{{ $item->co_provincia }}" {{ session('distrito') == $item->co_provincia ? 'selected' : '' }}>
+                                            {{ $item->no_provincia }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -192,9 +192,9 @@
                     <div class="col-10">
                         <select class="js-example-basic-single w-100" name="distrito">
                             <option value="" selected>Buscar por provincia</option>
-                            @foreach($distritos as $item)
-                                <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                    {{ $item->no_distrito }}
+                            @foreach($provincias as $item)
+                                <option value="{{ $item->co_provincia }}" {{ session('distrito') == $item->co_provincia ? 'selected' : '' }}>
+                                    {{ $item->no_provincia }}
                                 </option>
                             @endforeach
                         </select>
