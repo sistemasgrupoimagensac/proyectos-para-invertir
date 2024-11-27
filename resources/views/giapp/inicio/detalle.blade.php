@@ -33,6 +33,24 @@
           height: 65vh;
           width: 100%;
         }
+
+        .btn-back {
+            background-color: #003366; /* Azul oscuro similar al header */
+            color: white; /* Texto en blanco */
+            border: 2px solid #003366; /* Borde del mismo color */
+            border-radius: 8px; /* Bordes redondeados */
+            padding: 0.5rem 1rem; /* Espaciado interno */
+            font-size: 1rem; /* Tamaño del texto */
+            font-family: 'Arial', sans-serif; /* Fuente profesional */
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            transition: all 0.3s ease; /* Animación para hover */
+        }
+
+        .btn-back:hover {
+            background-color: white; /* Fondo blanco al pasar el mouse */
+            color: #003366; /* Texto en azul oscuro */
+            border-color: #003366; /* Mantiene el borde en azul */
+        }
     </style>
 </head>
 <body> 
@@ -42,10 +60,13 @@
 <!--desktop-->
 <div class="container-fluid seccion-2 p-3 d-block d-none d-lg-block ">
     <div class="row align-items-center justify-content-evenly">
-        <div class="col-lg-3">
+        <div class="col-lg-1">
             <a href="{{route('inicio')}}">
                 <img class="img-fluid logo p-2" src="../img/logo.png" alt="">
             </a>
+        </div>
+        <div class="col-lg-1" style="display: flex; align-items: center; margin: 1rem 0;">
+            <button class="btn-back" onclick="window.history.back()">⬅ Regresar</button>
         </div>
         <div class="col-lg-6">
             <div class="container opciones">
