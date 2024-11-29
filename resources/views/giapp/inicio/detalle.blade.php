@@ -51,6 +51,18 @@
             color: #003366; /* Texto en azul oscuro */
             border-color: #003366; /* Mantiene el borde en azul */
         }
+
+        #back-btn {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            #back-btn {
+                display: flex;
+                align-items: center;
+                margin: 1rem 0;
+            }
+        }
     </style>
 </head>
 <body> 
@@ -70,13 +82,13 @@
         </div>
         <div class="col-lg-6">
             <div class="container opciones">
-                <form action="{{route('inicio')}}">
+                <form action="{{route('inicio')}}" name="frm_filtros">
                     <div class="row  rounded-pill border border-1  p-1">
                         <div class="col-5 d-flex align-items-center">
-                            <select class="js-example-basic-single w-100 " name="distrito">
+                            <select class="js-example-basic-single w-100 " name="provincia" onchange="document.frm_filtros.submit();">
                                 <option value="" selected>Buscar por provincia</option>
-                                @foreach($distritos as $item)
-                                <option value="{{ $item->co_distrito }}">{{ $item->no_distrito }}</option>
+                                @foreach($provincias as $item)
+                                <option value="{{ $item->co_provincia }}">{{ $item->no_provincia }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -166,7 +178,7 @@
 <!--mobil-->
 <div class="container-fluid seccion-2  d-lg-none d-md-block d-sm-block d-xs-block menu-mobil bg-light position-fixed fixed-top pt-4" style="z-index: 99;">
     <div class="col-12 d-flex pb-3 align-items-center">
-        <form action="{{ route('inicio')  }}" class="col-12 d-flex align-items-center">
+        <form action="{{ route('inicio')  }}" class="col-12 d-flex align-items-center" name="frm_filtros_mobil">
             <div class="col-12 d-flex bg-white rounded-pill border border-1 p-2">
                 <div class="col-2 rounded-circle d-flex align-items-center justify-content-center">
                     <button type="submit" style="background-color: transparent; border: none;"><img
@@ -174,10 +186,10 @@
                     </button>
                 </div>
                 <div class="col-10">
-                    <select class="js-example-basic-single w-100" name="state" name="distrito">
+                    <select class="js-example-basic-single w-100" name="provincia" onchange="document.frm_filtros_mobil.submit();">
                         <option value="" selected>Buscar por Provincia</option>
-                        @foreach($distritos as $item)
-                        <option value="{{ $item->co_distrito }}">{{ $item->no_distrito }}</option>
+                        @foreach($provincias as $item)
+                        <option value="{{ $item->co_provincia }}">{{ $item->no_provincia }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -247,6 +259,9 @@
                     </a>
                 </p>
             @endif
+        </div>
+        <div class="col-lg-1" id="back-btn">
+            <button class="btn-back" onclick="window.history.back()">⬅ Regresar</button>
         </div>
         <p class="m-0 fs-3">{{ $detalle->no_tipo_garantia }}</p>
         <span class="fs-5">{{ $detalle->co_unico_solicitud }}</span>

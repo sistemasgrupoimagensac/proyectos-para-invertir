@@ -56,7 +56,7 @@
             right: 0;
         }
     
-        @media (max-width: 960px) {
+        @media (max-width: 992px) {
             #mensajeria-msj {
                 width: 50px !important;
                 height: 50px !important;
@@ -90,14 +90,14 @@
             </div>
             <div class="col-lg-6">
                 <div class="container opciones">
-                    <form action="{{route('favoritos')}}">
-                        <div class="row  rounded-pill border border-1  p-1">
+                    <form action="{{route('favoritos')}}" name="frm_filtros">
+                        <div class="row rounded-pill border border-1  p-1">
                             <div class="col-5 d-flex align-items-center">
-                                <select class="js-example-basic-single w-100 border-0" name="distrito">
+                                <select class="js-example-basic-single w-100 border-0" name="provincia" onchange="document.frm_filtros.submit();">
                                     <option value="" selected>Buscar por provincia</option>
-                                    @foreach($distritos as $item)
-                                        <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                            {{ $item->no_distrito }}
+                                    @foreach($provincias as $item)
+                                        <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
+                                            {{ $item->no_provincia }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -217,7 +217,7 @@
      <!--mobil-->
      <div class="container-fluid seccion-2  d-lg-none d-md-block d-sm-block d-xs-block menu-mobil bg-light position-fixed fixed-top pt-4 pb-2" style="z-index: 99;">
         <div class="col-12 d-flex pb-4 align-items-center">
-            <form action="{{ route('favoritos')  }}" class="col-12 d-flex align-items-center">
+            <form action="{{ route('favoritos')  }}" class="col-12 d-flex align-items-center" name="frm_filtros_mobil">
                 <div class="col-12 d-flex bg-white rounded-pill border border-1 p-2">
                     <div class="col-2 rounded-circle d-flex align-items-center justify-content-center">
                         <button type="submit" style="background-color: transparent; border: none;">
@@ -225,11 +225,11 @@
                         </button>
                     </div>
                     <div class="col-10">
-                        <select class="js-example-basic-single w-100" name="distrito">
+                        <select class="js-example-basic-single w-100" name="provincia" onchange="document.frm_filtros_mobil.submit();">
                             <option value="" selected>Buscar por provincia</option>
-                            @foreach($distritos as $item)
-                                <option value="{{ $item->co_distrito }}" {{ session('distrito') == $item->co_distrito ? 'selected' : '' }}>
-                                    {{ $item->no_distrito }}
+                            @foreach($provincias as $item)
+                                <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
+                                    {{ $item->no_provincia }}
                                 </option>
                             @endforeach
                         </select>

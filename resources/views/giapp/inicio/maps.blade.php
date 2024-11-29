@@ -54,13 +54,13 @@
             </div>
             <div class="col-lg-6">
                 <div class="container opciones">
-                    <form action="{{route('inicio')}}">
+                    <form action="{{route('inicio')}}" name="frm_filtros">
                         <div class="row  rounded-pill border border-1  p-1">
                             <div class="col-5 d-flex align-items-center">
-                                <select class="js-example-basic-single border-0 w-100" name="distrito">
+                                <select class="js-example-basic-single border-0 w-100" name="provincia" onchange="document.frm_filtros.submit();">
                                     <option value="" selected>Buscar por provincia</option>
                                     @foreach($provincias as $item)
-                                        <option value="{{ $item->co_provincia }}" {{ session('distrito') == $item->co_provincia ? 'selected' : '' }}>
+                                        <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
                                             {{ $item->no_provincia }}
                                         </option>
                                     @endforeach
@@ -182,7 +182,7 @@
     <!--mobil-->
     <div class="container-fluid seccion-2  d-lg-none d-md-block d-sm-block d-xs-block menu-mobil bg-light position-fixed fixed-top pt-4 pb-2" style="z-index: 99;">
         <div class="col-12 d-flex pb-4 align-items-center">
-            <form action="{{ route('inicio')  }}" class="col-12 d-flex align-items-center">
+            <form action="{{ route('inicio')  }}" class="col-12 d-flex align-items-center" name="frm_filtros_mobil">
                 <div class="col-12 d-flex bg-white rounded-pill border border-1 p-2">
                     <div class="col-2 rounded-circle d-flex align-items-center justify-content-center">
                         <button type="submit" style="background-color: transparent; border: none;">
@@ -190,10 +190,10 @@
                         </button>
                     </div>
                     <div class="col-10">
-                        <select class="js-example-basic-single w-100" name="distrito">
+                        <select class="js-example-basic-single w-100" name="provincia" onchange="document.frm_filtros_mobil.submit();">
                             <option value="" selected>Buscar por provincia</option>
                             @foreach($provincias as $item)
-                                <option value="{{ $item->co_provincia }}" {{ session('distrito') == $item->co_provincia ? 'selected' : '' }}>
+                                <option value="{{ $item->co_provincia }}" {{ session('provincia') == $item->co_provincia ? 'selected' : '' }}>
                                     {{ $item->no_provincia }}
                                 </option>
                             @endforeach

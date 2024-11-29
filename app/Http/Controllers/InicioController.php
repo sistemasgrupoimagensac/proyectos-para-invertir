@@ -30,7 +30,7 @@ class InicioController extends Controller
     public function index(Request $request){
                
         // $distritos = DB::table('p_distrito')->select('co_distrito','no_distrito')->get();
-        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->get();
+        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->orderBy('no_provincia')->get();
         $ubicacion = $request->distritos;
         $monto = $request->monto;
      

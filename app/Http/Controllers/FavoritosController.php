@@ -11,10 +11,7 @@ class FavoritosController extends Controller
 {
     public function index(Request $request)
     {
-               
-        $distritos = DB ::table('p_distrito')
-                    ->select('co_distrito','no_distrito')
-                    ->get();
+        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->orderBy('no_provincia')->get();
 
         $favoritos= DB::table('me_interesa')
                     ->join('p_prestamo', 'me_interesa.co_prestamo', 'p_prestamo.co_prestamo')
@@ -25,6 +22,7 @@ class FavoritosController extends Controller
                     ->join('a_estado', 'p_prestamo.co_estado', 'a_estado.co_estado')
                     ->leftJoin('p_cartera', 'p_prestamo.co_prestamo', 'p_cartera.co_prestamo')
                     ->leftJoin('p_distrito', 'p_distrito.co_distrito', 'p_solicitud_prestamo.co_distrito')
+                    ->leftJoin('h_provincia', 'h_provincia.co_provincia', 'p_distrito.co_provincia')
                     ->leftJoin('a_tipo_credito', 'p_solicitud_prestamo.co_tipo_credito', 'a_tipo_credito.co_tipo_credito')
                     ->leftJoin('a_tipo_garantia','p_solicitud_prestamo.co_tipo_garantia','a_tipo_garantia.co_tipo_garantia')
                     ->leftJoin('a_tipo_cliente','p_prestamo.co_tipo_cliente','a_tipo_cliente.co_tipo_cliente')
@@ -64,8 +62,8 @@ class FavoritosController extends Controller
                     ->where('me_interesa.estado', 1)
                     ->orderBy('fe_solicitud_prestamo','desc')
                     ->where(function($query)use($request){
-                        if($request->distrito){
-                            $query->where('p_distrito.co_distrito', $request->distrito);
+                        if($request->provincia){
+                            $query->where('h_provincia.co_provincia', $request->provincia);
                         }
                     })
                     ->where(function ($query) use ($request) {
@@ -81,7 +79,7 @@ class FavoritosController extends Controller
                     // ->paginate(20);
                     ->get();
 
-            session(['distrito' => $request->input('distrito')]);
+            session(['provincia' => $request->input('provincia')]);
             session(['monto' => $request->input('monto')]);
 
             $analista = DB::table('p_usuario')->join('p_solicitud_inversionista', 'p_solicitud_inversionista.co_usuario', 'p_usuario.co_usuario')
@@ -93,7 +91,7 @@ class FavoritosController extends Controller
                         )
                         ->first();
 
-            return view('giapp.inicio.favoritos', compact('favoritos', 'distritos', 'analista'));
+            return view('giapp.inicio.favoritos', compact('favoritos', 'provincias', 'analista'));
 
     }
 

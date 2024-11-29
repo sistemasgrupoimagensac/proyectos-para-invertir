@@ -10,7 +10,7 @@ class UbicacionController extends Controller
     public function index(Request $request)
     {
         // $distritos = DB ::table('p_distrito')->select('co_distrito','no_distrito')->get();
-        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->get();
+        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->orderBy('no_provincia')->get();
 
         /* $solicitantes = DB::table('p_solicitud_prestamo')
                             ->join('p_persona', 'p_persona.co_persona', 'p_solicitud_prestamo.co_persona')

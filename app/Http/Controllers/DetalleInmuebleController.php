@@ -13,7 +13,7 @@ class DetalleInmuebleController extends Controller
 {
     public function index(Request $request,$co_solicitud_prestamo){
         
-        $distritos = DB ::table('p_distrito')->select('co_distrito','no_distrito')->get();
+        $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->orderBy('no_provincia')->get();
 
         $detalle = DB::table('p_solicitud_prestamo')
             ->join('p_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo', 'p_prestamo.co_solicitud_prestamo')                
@@ -112,6 +112,6 @@ class DetalleInmuebleController extends Controller
         
         $detalle->interesado = $like;
                 
-        return view('giapp.inicio.detalle', compact('detalle', 'distritos', 'imagenes', 'analista_inversion', 'aprobadoPorUserActual'));
+        return view('giapp.inicio.detalle', compact('detalle', 'provincias', 'imagenes', 'analista_inversion', 'aprobadoPorUserActual'));
     }
 }
