@@ -31,6 +31,49 @@
     <!--sweet alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+        .item-list {
+            border: 1px solid #ccc;
+        }
+    
+        #mensajeria-msj {
+            position: fixed;
+            bottom: 100px;
+            right: 50px;
+            border-radius: 50%;
+            width: 113px;
+            height: 113px;
+            font-size: 8rem;
+        }
+    
+        #mensajeria-msj i{
+            color: #00a884;
+        }
+    
+        #mensajeria-msj span {
+            font-size: 1rem;
+            top: 50px;
+            right: 0;
+        }
+    
+        @media (max-width: 960px) {
+            #mensajeria-msj {
+                width: 50px !important;
+                height: 50px !important;
+                bottom: 170px !important;
+                right: 20px !important;
+            }
+    
+            #mensajeria-msj img {
+                height: 50px;
+            }
+    
+            #mensajeria-msj span {
+                display: none;
+            }
+        }
+        </style>
+
 </head>
 
 <body>
@@ -252,7 +295,7 @@
 
     #mensajeria-msj {
         position: fixed;
-        bottom: 150px;
+        bottom: 100px;
         right: 50px;
         border-radius: 50%;
         width: 113px;
@@ -265,7 +308,7 @@
     }
 
     #mensajeria-msj span {
-        font-size: 1.1rem;
+        font-size: 1rem;
         top: 50px;
         right: 0;
     }
@@ -322,7 +365,7 @@
 
     <div id="mensajeria-msj">
         <a href="https://wa.me/51{{ $analista->celular ?? '' }}?text=Hola%2C+me+interesa+invertir+en+un+proyecto" target="_blank" class="position-relative">
-            <img src="img/Whatsapp.png" height="130" alt="">
+            <img src="img/Whatsapp.png" height="100" alt="">
             <span class="position-absolute translate-middle badge rounded-pill bg-secondary ">
                 Contacte a su analista
             </span>

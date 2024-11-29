@@ -283,7 +283,7 @@
 
     #mensajeria-msj {
         position: fixed;
-        bottom: 150px;
+        bottom: 100px;
         right: 50px;
         border-radius: 50%;
         width: 113px;
@@ -296,9 +296,26 @@
     }
 
     #mensajeria-msj span {
-        font-size: 1.1rem;
+        font-size: 1rem;
         top: 50px;
         right: 0;
+    }
+
+    @media (max-width: 960px) {
+        #mensajeria-msj {
+            width: 50px;
+            height: 50px;
+            bottom: 170px;
+            right: 20px;
+        }
+
+        #mensajeria-msj img {
+            height: 50px;
+        }
+
+        #mensajeria-msj span {
+            display: none;
+        }
     }
     </style>
 <!-- contenido-->   
@@ -390,7 +407,7 @@
 <div id="mensajeria-msj">
     <a href="https://wa.me/51{{ $analista->celular ?? '' }}?text=Hola%2C+me+interesa+invertir+en+un+proyecto" target="_blank" class="position-relative">
         {{-- <i class="fa-brands fa-whatsapp"></i> --}}
-        <img src="img/Whatsapp.png" height="130" alt="">
+        <img src="img/Whatsapp.png" height="100" alt="">
         <span class="position-absolute translate-middle badge rounded-pill bg-secondary ">
             Contacte a su analista
         </span>
