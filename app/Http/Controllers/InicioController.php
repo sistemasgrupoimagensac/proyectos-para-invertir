@@ -397,20 +397,158 @@ class InicioController extends Controller
             }
 
             if ( isset($max_prioridad_proyecto) ) {
-                Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad));
 
-                $response = [
-                    'http_code' => 200,
-                    'message'   => "Proyecto aprobado correctamente.",
-                    'detail'    => "Estas en cola para el proyecto, eres el número: $prioridad.",
-                    'status'    => "Success",
-                    'analista'  => $analista->nu_celular_trabajo,
-                    'co_unico'  => $prestamo->co_unico_solicitud,
-                    'prestamo'  => $request->codigo_prestamo,
-                    'persona'   => Auth::user()->inversionista_id,
-                    'total_aprobados' => $total_aprobados,
-                    'enviar_wsp' => $enviar_wsp,
-                ];
+                // Verificar si existe cola, sin contar al mismo usuario porque ya se registró antes en esta tabla para llegar aqui 
+                $existe_cola = InversionistaProyecto::where([
+                        'prestamo_id' => $request->codigo_prestamo,
+                        'estado' => 1,
+                    ])
+                    ->where('persona_id', '!=', Auth::user()->inversionista_id)
+                ->first();
+                if ( $existe_cola ) {
+                    Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad));
+                    
+                    $response = [
+                        'http_code' => 200,
+                        'message'   => "Proyecto aprobado correctamente.",
+                        'detail'    => "Estas en cola para el proyecto, eres el número: $prioridad.",
+                        'status'    => "Success",
+                        'analista'  => $analista->nu_celular_trabajo,
+                        'co_unico'  => $prestamo->co_unico_solicitud,
+                        'prestamo'  => $request->codigo_prestamo,
+                        'persona'   => Auth::user()->inversionista_id,
+                        'total_aprobados' => $total_aprobados,
+                        'enviar_wsp' => $enviar_wsp,
+                    ];
+
+                } else {
+
+                    // Validar que el proyecto no este asignado
+                    $proyectoAsignado = RPrestamoInversionista::where([
+                            'co_prestamo' => $request->codigo_prestamo,
+                            'in_estado'   => 1,
+                        ])
+                        ->where('co_inversionista', '!=', $p_inversionista->co_inversionista)
+                    ->first();
+                    if ( $proyectoAsignado ) {
+                        Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad+1));
+
+                        $response = [
+                            'http_code' => 200,
+                            'message'   => "Proyecto aprobado correctamente.",
+                            'detail'    => "Estas en cola para el proyecto, eres el número: 2.",
+                            'status'    => "Success",
+                            'analista'  => $analista->nu_celular_trabajo,
+                            'co_unico'  => $prestamo->co_unico_solicitud,
+                            'prestamo'  => $request->codigo_prestamo,
+                            'persona'   => Auth::user()->inversionista_id,
+                            'total_aprobados' => $total_aprobados,
+                            'enviar_wsp' => $enviar_wsp,
+                        ];
+                    } else {
+
+                        HOcurrenciaPrestamo::create([
+                            'co_ocurrencia'       => 34,
+                            'co_condicion'        => 341,
+                            'co_prestamo'         => $request->codigo_prestamo,
+                            'de_observacion'      => "Aprobado desde la plataforma de proyectos.",
+                            'in_estado'           => 1,
+                            'co_usuario_creacion' => null,
+                            'fe_usuario_creacion' => now(),
+                            'co_usuario_modifica' => null,
+                            'fe_usuario_modifica' => now(),
+                        ]);
+                        PPrestamo::where('co_prestamo', $request->codigo_prestamo)
+                            ->update([
+                                'co_ocurrencia_actual' => 34,
+                                'co_condicion_actual'  => 341,
+                                'co_usuario_inversion'  => $inversionista_gestor->gestor,
+                            ])
+                        ;
+            
+                        RPrestamoInversionista::where(['co_prestamo' => $request->codigo_prestamo])->update(['in_estado' => 0]);
+            
+                        RPrestamoInversionista::create([
+                            'co_prestamo'         => $request->codigo_prestamo,
+                            'co_inversionista'    => $p_inversionista->co_inversionista, // codigo p_inversionista
+                            'in_estado'           => 1,
+                            'nu_porcentaje'       => 100,
+                            'co_usuario_modifica' => null,
+                            'fe_usuario_modifica' => now()
+                        ]);
+
+                        Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobado($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo));
+            
+                        if ($prestamo->co_unico_prestamo == '') {
+            
+                            $sede = $prestamo->co_sede;
+                            $producto = $prestamo->co_producto;
+            
+                            $letra = 'P';
+                            $numeroSede = str_pad($sede, 3, "0", STR_PAD_LEFT);
+                            $numeroProducto = str_pad($producto, 3, "0", STR_PAD_LEFT);
+            
+                            $semilla = ASemillaPrestamo::where('in_estado', 1)->orderBy('nu_solicitud', 'DESC')->first();
+                            $numero  = $semilla->nu_solicitud + 1;
+            
+                            ASemillaPrestamo::create([
+                                'nu_solicitud'        => $numero,
+                                'in_estado'           => 1,
+                                'co_usuario_modifica' => null,
+                                'fe_usuario_modifica' => now()
+                            ]);
+            
+                            $codigoUnico = $letra . $numeroSede . '-' . $numeroProducto . '-' . $numero;
+                            PPrestamo::where('co_prestamo', $request->codigo_prestamo)->update(['co_unico_prestamo' => $codigoUnico]);
+                        }
+            
+                        $detalleEstado = HEstadoPrestamo::select('co_estado_prestamo')->orderBy('co_estado_prestamo', 'DESC')->first();
+                        $cantidad = $detalleEstado->co_estado_prestamo + 1;
+                        HEstadoPrestamo::create([
+                            'co_estado_prestamo'  => $cantidad,
+                            'co_prestamo'         => $request->codigo_prestamo,
+                            'co_estado'           => 6, //INVERSIONISTA ASIGNADO
+                            'in_estado'           => 1,
+                            'co_usuario_creacion' => null,
+                            'co_usuario_modifica' => null,
+                            'fe_usuario_creacion' => now(),
+                            'fe_usuario_modifica' => now(),
+                        ]);
+            
+                        PNotificacion::create([
+                            'co_usuario_notificacion' => $prestamo->co_usuario,
+                            'de_tipo_notificacion'    => "Prestamo {$prestamo->co_unico_solicitud} se asigno inversionista",
+                            'de_url'                  => url("/solicitantes-aceptados?solicitante=&codigo={$prestamo->co_unico_solicitud}&codigo_prestamo=&fecha_inicio=&fecha_fin="),
+                            'co_tipo_notificacion'    => 2,
+                            'in_estado'               => 1,
+                            'co_usuario_modifica'     => null,
+                            'fe_notificacion'         => now(),
+                            'fe_usuario_modifica'     => now(),
+                        ]);
+            
+                        HAuditoria::create([
+                            'co_indice'           => $request->codigo_prestamo,
+                            'no_auditoria'        => 'Se asigna proyecto desde la web de proyectos.',
+                            'no_tabla'            => 'p_prestamo',
+                            'co_usuario_modifica' => null,
+                            'fe_usuario_modifica' => now(),
+                        ]);
+            
+                        $response = [
+                            'http_code' => 200,
+                            'message'   => "Proyecto aprobado correctamente.",
+                            'status'    => "Success",
+                            'analista'  => $analista->nu_celular_trabajo,
+                            'co_unico'  => $prestamo->co_unico_solicitud,
+                            'prestamo'  => $request->codigo_prestamo,
+                            'persona'   => Auth::user()->inversionista_id,
+                            'total_aprobados' => $total_aprobados,
+                            'enviar_wsp' => $enviar_wsp,
+                        ];
+                    }
+
+                }
+
             } else {
                 // Validar que el proyecto no este asignado
                 $proyectoAsignado = RPrestamoInversionista::where([
