@@ -55,6 +55,7 @@ class InicioController extends Controller
             ->leftJoin('me_interesa','users_gi.id','me_interesa.co_inversionista')
             ->leftJoin('datos_prestamo', 'datos_prestamo.co_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo')
             ->leftJoin('a_tipo_moneda AS tipo_moneda_dato_prestamo', 'datos_prestamo.co_tipo_moneda', 'tipo_moneda_dato_prestamo.co_tipo_moneda')
+            ->leftJoin('p_usuario as ventas', 'ventas.co_usuario', 'p_prestamo.co_usuario')
             ->where([
                 'p_solicitud_prestamo.in_estado' => 1,
                 'p_prestamo.in_estado' => 1,
@@ -62,7 +63,7 @@ class InicioController extends Controller
             ->select(
                 'r_prestamo_inversionista.co_inversionista',
                 'p_prestamo.co_ocurrencia_actual',
-                'no_forma_pago',
+                'no_forma_pago', 'ventas.name as vendedor',
                 'no_tiempo_pago', 
                 'p_solicitud_prestamo.nu_total_solicitado', 
                 'p_solicitud_prestamo.co_solicitud_prestamo',

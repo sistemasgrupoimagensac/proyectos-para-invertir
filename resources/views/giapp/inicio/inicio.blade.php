@@ -360,6 +360,14 @@
                 </a>
             </div>
         </div>
+        @if(Auth::user()->id == 281)
+        <div style="position: absolute; top:0px; right:0px" class="btns-proyecto p-3">
+            <div class="text-end">
+                <span style="font-size: .8rem;">Vendedor</span><br>
+                <span>{{ $item->vendedor }}</span>
+            </div>
+        </div>
+        @else
         <div style="position: absolute; top:0px; right:0px" class="btns-proyecto">
             <div style="position:relative" class="heart text-center likeButton" data-co-prestamo="{{ $item->co_prestamo }}">
                 @if($item->interesado)
@@ -393,6 +401,7 @@
             </p>
             </div>
         </div>
+        @endif
     </div>
     @endforeach
     

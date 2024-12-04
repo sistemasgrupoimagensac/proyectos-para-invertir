@@ -233,6 +233,14 @@
  </div>
   
     <div class="container pb-5 contenido">
+        @if(Auth::user()->id == 281)
+        <div style="position: absolute; top:0px; right:0px" class="btns-proyecto p-3">
+            <div class="text-end">
+                <span style="font-size: .8rem;">Vendedor</span><br>
+                <span>{{ $detalle->vendedor }}</span>
+            </div>
+        </div>
+        @else
         <div style="position: absolute; top: 0; right: 0;">
             <div class="cajamegusta likeButton" data-co-prestamo="{{ $detalle->co_prestamo }}">
                 @if(optional($detalle->interesado)->estado == 1)
@@ -260,6 +268,7 @@
                 </p>
             @endif
         </div>
+        @endif
         <div class="col-lg-1" id="back-btn">
             <button class="btn-back" onclick="window.history.back()">⬅ Regresar</button>
         </div>
@@ -290,6 +299,7 @@
                     <p class="m-0 fw-bold mt-5">Monto de Financiamiento</p>
                     <span class="fs-1 fw-bold">{{$detalle->nc_tipo_moneda}} {{ number_format($detalle->nu_total_solicitado, 2) }}</span>
                 </div>
+                @if(Auth::user()->id != 281)
                 <div class="col-lg-4 col-md-6">
                     <form class="form m-auto border-1 border" action="">
                         <div class="d-flex m-auto justify-content-center align-items-center p-3">
@@ -305,6 +315,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
     </div>

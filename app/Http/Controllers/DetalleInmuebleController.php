@@ -33,6 +33,7 @@ class DetalleInmuebleController extends Controller
             ->leftJoin('a_tipo_cliente','p_prestamo.co_tipo_cliente','a_tipo_cliente.co_tipo_cliente')
             ->leftJoin('datos_prestamo', 'datos_prestamo.co_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo')
             ->leftJoin('a_tipo_moneda AS tipo_moneda_dato_prestamo', 'datos_prestamo.co_tipo_moneda', 'tipo_moneda_dato_prestamo.co_tipo_moneda')
+            ->leftJoin('p_usuario as ventas', 'ventas.co_usuario', 'p_prestamo.co_usuario')
             ->where([
                 'p_solicitud_prestamo.in_estado' => 1,
                 'p_solicitud_prestamo.co_solicitud_prestamo'=> $co_solicitud_prestamo
@@ -40,7 +41,7 @@ class DetalleInmuebleController extends Controller
             ->whereIn('p_prestamo.co_estado', [4, 5])
             ->select(
                 'no_forma_pago',
-                'no_tiempo_pago', 
+                'no_tiempo_pago', 'ventas.name as vendedor',
                 'p_solicitud_prestamo.nu_total_solicitado', 
                 'p_solicitud_prestamo.co_solicitud_prestamo',
                 'p_prestamo.fe_usuario_modifica', 
