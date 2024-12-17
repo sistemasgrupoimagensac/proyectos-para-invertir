@@ -36,7 +36,7 @@ class ProjectDetailsController extends Controller
                 'p_solicitud_prestamo.in_estado' => 1,
                 'p_prestamo.in_estado' => 1,
             ])
-            ->where('co_solicitud_prestamo', $id)
+            ->where('p_solicitud_prestamo.co_solicitud_prestamo', $id)
             ->select(
                 'p_solicitud_prestamo.co_solicitud_prestamo',
                 DB::raw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) as imagen_principal"),
