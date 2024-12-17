@@ -11,17 +11,33 @@ use App\PPrestamo;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class LikeController extends Controller
 {
     public function meInteresa(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer',
+            'co_prestamo' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'http_code' => 422,
+                'message'   => 'Errores de validación.',
+                'errors'    => $validator->errors(),
+                'status'    => 'Error',
+            ], 422);
+        }
+
         $user = User::find($request->user_id);
         if ( !$user ) {
             return response()->json([
                 'http_code' => 400,
-                'message' => 'El usuario no existe.',
-                'status' => 'Error',
+                'message'   => 'El usuario no existe.',
+                'status'    => 'Error',
             ]);
         }
 
@@ -74,9 +90,9 @@ class LikeController extends Controller
         $cantidad = MeInteresa::where('co_prestamo', $request->co_prestamo)->where('estado', 1)->count();
         
         return response()->json([
-            'http_code' => 200,
-            'message' => 'Like asignado.',
-            'status' => 'Success',
+            'http_code'   => 200,
+            'message'     => 'Like asignado.',
+            'status'      => 'Success',
             'like_actual' => $like,
             'cantidad'    => $cantidad,
         ]);
@@ -84,12 +100,26 @@ class LikeController extends Controller
 
     public function noMeInteresa(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer',
+            'co_prestamo' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'http_code' => 422,
+                'message'   => 'Errores de validación.',
+                'errors'    => $validator->errors(),
+                'status'    => 'Error',
+            ], 422);
+        }
+
         $user = User::find($request->user_id);
         if ( !$user ) {
             return response()->json([
                 'http_code' => 400,
-                'message' => 'El usuario no existe.',
-                'status' => 'Error',
+                'message'   => 'El usuario no existe.',
+                'status'    => 'Error',
             ]);
         }
 
@@ -104,12 +134,15 @@ class LikeController extends Controller
             $like->fe_modificacion = now();
             $like->save();
         }
-    
-        return response()->json([            
-            'http_code' => 200,
+
+        $cantidad = MeInteresa::where('co_prestamo', $request->co_prestamo)->where('estado', 1)->count();
+
+        return response()->json([
+            'http_code'   => 200,
+            'message'     => 'Dislike asignado.',
+            'status'      => 'Success',
             'like_actual' => $like,
-            'message' => 'Dislike asignado.',
-            'status' => 'Success',
+            'cantidad'    => $cantidad,
         ]);
     }
 }

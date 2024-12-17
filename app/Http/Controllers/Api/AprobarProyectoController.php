@@ -19,18 +19,25 @@ use App\RPrestamoInversionista;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AprobarProyectoController extends Controller
 {
     public function aceptar_proyecto(Request $request)
     {
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
             'codigo_prestamo' => 'required|integer',
-
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'http_code' => 422,
+                'message'   => 'Errores de validación.',
+                'errors'    => $validator->errors(),
+                'status'    => 'Error',
+            ], 422);
+        }
 
         try {
             DB::beginTransaction();
@@ -39,10 +46,11 @@ class AprobarProyectoController extends Controller
             if ( !$user ) {
                 return response()->json([
                     'http_code' => 400,
-                    'message' => 'El usuario no existe.',
-                    'status' => 'Error',
+                    'message'   => 'El usuario no existe.',
+                    'status'    => 'Error',
                 ]);
             }
+
             $max_prioridad_proyecto = InversionistaProyecto::where('prestamo_id', $request->codigo_prestamo)->max('prioridad');
             $prioridad = $max_prioridad_proyecto ? $max_prioridad_proyecto + 1 : 1;
 
@@ -52,15 +60,17 @@ class AprobarProyectoController extends Controller
                     'estado' => 1,
                 ])
             ->first();
+
             if ( $exist_inversionista ) {
                 $response = [
                     'http_code' => 400,
-                    'message'   => "Usted ya aprobó este proyecto. Refrescar la página.",
+                    'message'   => "Usted ya aprobó este proyecto.",
                     'status'    => "Error",
                 ];
                 DB::rollBack();
                 return response()->json($response);
             }
+
             InversionistaProyecto::create([
                 'prestamo_id' => $request->codigo_prestamo,
                 'persona_id' => $user->inversionista_id,
@@ -82,6 +92,7 @@ class AprobarProyectoController extends Controller
                     'in_estado'   => 1,
                 ])
             ->first();
+
             if ( $proyectoAsignado ) {
                 $total_aprobados += 1;
 
@@ -101,6 +112,7 @@ class AprobarProyectoController extends Controller
             $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $request->codigo_prestamo)
                 ->where('persona_id', '!=', $co_persona_asignada)
             ->count();
+
             if ( $cant_aprobados_plataforma ) {
                 $total_aprobados += $cant_aprobados_plataforma;
             }
@@ -133,6 +145,7 @@ class AprobarProyectoController extends Controller
             $analista = DB::table('p_usuario')
                 ->where('co_usuario', $inversionista_gestor->gestor)
             ->first();
+
             $analistas_emails = DB::table('p_usuario')
                 // ->where('co_perfil', 12)
                 ->where('co_usuario', 42)
@@ -159,6 +172,7 @@ class AprobarProyectoController extends Controller
                     ])
                     ->where('persona_id', '!=', $user->inversionista_id)
                 ->first();
+                
                 if ( $existe_cola ) {
                     Mail::to($p_inversionista->no_correo_electronico)->cc($analistas_emails)->send(new NotificacionProyectoAprobadoCola($prestamo->co_unico_solicitud, $p_inversionista->no_completo_persona, $analista->name, $prestamo->co_solicitud_prestamo, $prioridad));
                     
