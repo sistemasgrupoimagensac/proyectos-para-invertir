@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\LikeController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('/like',[LikeController::class, 'meInteresa']);
+Route::post('/dislike',[LikeController::class, 'noMeInteresa']);
