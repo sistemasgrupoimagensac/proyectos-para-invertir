@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('/projects')->group(function() {
+    Route::get('/', 'Api\AllProjectsController@getAll');
+    Route::get('/{id}', 'Api\ProjectDetailsController@getOne');
+});
