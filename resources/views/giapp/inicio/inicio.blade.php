@@ -347,7 +347,7 @@
                             <strong>Tasa de Interés Mensual:</strong>
                             <span>{{ (float) $item->nu_tasa_interes_mensual }}%</span>
                         </p>
-                        <p class="m-0"><strong>Plazo de Finanaciamiento: </strong>{{$item->no_tiempo_pago}}</p>
+                        <p class="m-0"><strong>Plazo de Financiamiento: </strong>{{$item->no_tiempo_pago}}</p>
                         <p class="m-0"><strong>Tipo de Financiamiento: </strong>{{ $item->no_forma_pago}}</p>
                         <p class="m-0"><strong>Valor Comercial del Inmueble: </strong>{{$item->tipo_moneda_dato_prestamo}} {{ number_format($item->valor_comercial_inmueble ?? 0, 2) }}</p>
                         <div class="d-flex justify-content-end">
@@ -397,7 +397,6 @@
             @endif
             <p style="position:relative; right: 3rem; font-size: 0.8rem;" class="cont_aprobados" data-co_prestamo="{{ $item->co_prestamo }}">
                 Cant. de aprobaciones: {{ $item->total_aprobados_proyecto }}
-                {{-- Cant. de aprobaciones: {{ $total_aprobados[$item->co_prestamo] ?? 0 }} --}}
             </p>
             </div>
         </div>
