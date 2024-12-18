@@ -207,12 +207,7 @@ class InicioController extends Controller
             )
         ->first();
 
-        $total_aprobados = InversionistaProyecto::groupBy('prestamo_id')
-            ->selectRaw('prestamo_id, count(*) as cantidad_aprobados')
-            ->get()
-        ->pluck('cantidad_aprobados', 'prestamo_id');
-
-        return view('giapp.inicio.inicio', compact('solicitantesprocesados', 'provincias','totalLikesPorPrestamo','ubicacion', 'monto', 'analista', 'total_aprobados'));
+        return view('giapp.inicio.inicio', compact('solicitantesprocesados', 'provincias','totalLikesPorPrestamo','ubicacion', 'monto', 'analista'));
     }
 
     public function meInteresa(Request $request)

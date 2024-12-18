@@ -21,3 +21,5 @@ Route::prefix('/projects')->group(function() {
     Route::get('/', 'Api\AllProjectsController@getAll');
     Route::get('/{id}', 'Api\ProjectDetailsController@getOne');
 });
+
+Route::get('/provincias', 'Api\ProvinciasController@getAll');
