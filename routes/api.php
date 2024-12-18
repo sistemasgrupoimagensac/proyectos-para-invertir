@@ -20,11 +20,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/like',[LikeController::class, 'meInteresa']);
-Route::post('/dislike',[LikeController::class, 'noMeInteresa']);
-Route::prefix('/projects')->group(function() {
-    Route::get('/', 'Api\AllProjectsController@getAll');
-    Route::get('/{id}', 'Api\ProjectDetailsController@getOne');
+Route::middleware(['cors'])->group(function() {
+    Route::post('/like',[LikeController::class, 'meInteresa']);
+    Route::post('/dislike',[LikeController::class, 'noMeInteresa']);
+    Route::prefix('/projects')->group(function() {
+        Route::get('/', 'Api\AllProjectsController@getAll');
+        Route::get('/{id}', 'Api\ProjectDetailsController@getOne');
+    });
+    
+    Route::get('/provincias', 'Api\ProvinciasController@getAll');
 });
 
-Route::get('/provincias', 'Api\ProvinciasController@getAll');
