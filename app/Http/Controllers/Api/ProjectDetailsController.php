@@ -70,30 +70,36 @@ class ProjectDetailsController extends Controller
             })
             ->first();
 
-        if ($solicitante) {
-            $solicitante->total_aprobados_proyecto = 0;
-            $co_persona_asignada = 0;
-            $proyectoAsignado = RPrestamoInversionista::join('p_inversionista AS pi', 'pi.co_inversionista', 'r_prestamo_inversionista.co_inversionista')
-                            ->join('p_solicitud_inversionista AS soli', 'soli.co_solicitud_inversionista', 'pi.co_solicitud_inversionista')
-                            ->join('p_persona AS p', 'p.co_persona', 'soli.co_persona')
-                            ->where('r_prestamo_inversionista.co_prestamo', $solicitante->co_prestamo)->where('r_prestamo_inversionista.in_estado', 1)
-                            ->select('p.co_persona')
-                            ->first();
-            
-            if ($proyectoAsignado) {
-                $solicitante->total_aprobados_proyecto += 1;
-                $co_persona_asignada = $proyectoAsignado->co_persona;
-            }
-
-            $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $solicitante->co_prestamo)
-                                            ->where('persona_id', '<>', $co_persona_asignada)
-                                            ->count();
-            if ( $cant_aprobados_plataforma ) {
-                $solicitante->total_aprobados_proyecto += $cant_aprobados_plataforma;
-            }
-
-            $solicitante->imagenes = DB::table('r_imagenes_inmueble')->where('co_solicitud_prestamo', $solicitante->co_solicitud_prestamo)->where('in_estado', 1)->select('url_evidencia AS imagen')->get();
+        if (null == $solicitante) {
+            return response()->json([
+                'data'  => [],
+                'mesage' => 'No existe el proyecto',
+                'success' => false,
+            ], 404);
         }
+        
+        $solicitante->total_aprobados_proyecto = 0;
+        $co_persona_asignada = 0;
+        $proyectoAsignado = RPrestamoInversionista::join('p_inversionista AS pi', 'pi.co_inversionista', 'r_prestamo_inversionista.co_inversionista')
+                        ->join('p_solicitud_inversionista AS soli', 'soli.co_solicitud_inversionista', 'pi.co_solicitud_inversionista')
+                        ->join('p_persona AS p', 'p.co_persona', 'soli.co_persona')
+                        ->where('r_prestamo_inversionista.co_prestamo', $solicitante->co_prestamo)->where('r_prestamo_inversionista.in_estado', 1)
+                        ->select('p.co_persona')
+                        ->first();
+        
+        if ($proyectoAsignado) {
+            $solicitante->total_aprobados_proyecto += 1;
+            $co_persona_asignada = $proyectoAsignado->co_persona;
+        }
+
+        $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $solicitante->co_prestamo)
+                                        ->where('persona_id', '<>', $co_persona_asignada)
+                                        ->count();
+        if ( $cant_aprobados_plataforma ) {
+            $solicitante->total_aprobados_proyecto += $cant_aprobados_plataforma;
+        }
+
+        $solicitante->imagenes = DB::table('r_imagenes_inmueble')->where('co_solicitud_prestamo', $solicitante->co_solicitud_prestamo)->where('in_estado', 1)->select('url_evidencia AS imagen')->get();        
 
         return response()->json([
             'data'  => new ProjectResource($solicitante),
