@@ -32,6 +32,8 @@ class ProjectResource extends JsonResource
             'aprobados'             => $this->total_aprobados_proyecto,
             'latitud'               => $this->when(optional($this)->latitud, (double) optional($this)->latitud),
             'longitud'              => $this->when(optional($this)->longitud, (double) optional($this)->longitud),
+            'is_liked'              => $this->is_liked == 1,
+            'is_aprobado'           => $this->aprobadoPorUserActual,
         ];
     }
 }

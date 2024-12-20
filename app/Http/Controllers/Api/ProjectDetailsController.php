@@ -46,7 +46,8 @@ class ProjectDetailsController extends Controller
                 'motivo_prestamo',
                 DB::raw('IFNULL(position_latitud_inmueble, -12.0973182) as latitud'),
                 DB::raw('IFNULL(position_longitud_inmueble, -77.0233135) as longitud'),
-                DB::raw("(SELECT COUNT(*) FROM me_interesa WHERE me_interesa.co_prestamo = p_prestamo.co_prestamo AND me_interesa.estado = 1) AS likes")
+                DB::raw("(SELECT COUNT(*) FROM me_interesa WHERE me_interesa.co_prestamo = p_prestamo.co_prestamo AND me_interesa.estado = 1) AS likes"),
+                DB::raw("(SELECT estado FROM me_interesa WHERE me_interesa.co_prestamo = p_prestamo.co_prestamo AND me_interesa.co_inversionista = ". $request->user()->id .") AS is_liked")
             )
             ->whereRaw("p_prestamo.co_ocurrencia_actual IN (31, 32, 33, 34, 36)")
             ->where(function($q) {
@@ -79,6 +80,7 @@ class ProjectDetailsController extends Controller
         }
         
         $solicitante->total_aprobados_proyecto = 0;
+        $solicitante->aprobadoPorUserActual = false;
         $co_persona_asignada = 0;
         $proyectoAsignado = RPrestamoInversionista::join('p_inversionista AS pi', 'pi.co_inversionista', 'r_prestamo_inversionista.co_inversionista')
                         ->join('p_solicitud_inversionista AS soli', 'soli.co_solicitud_inversionista', 'pi.co_solicitud_inversionista')
@@ -90,6 +92,10 @@ class ProjectDetailsController extends Controller
         if ($proyectoAsignado) {
             $solicitante->total_aprobados_proyecto += 1;
             $co_persona_asignada = $proyectoAsignado->co_persona;
+
+            if ($proyectoAsignado->co_persona == $request->user()->inversionista_id) {
+                $solicitante->aprobadoPorUserActual = true;
+            }
         }
 
         $cant_aprobados_plataforma = InversionistaProyecto::where('prestamo_id', $solicitante->co_prestamo)
@@ -97,6 +103,17 @@ class ProjectDetailsController extends Controller
                                         ->count();
         if ( $cant_aprobados_plataforma ) {
             $solicitante->total_aprobados_proyecto += $cant_aprobados_plataforma;
+        }
+
+        $inversionista_proyecto = InversionistaProyecto::where([
+                    'prestamo_id' => $solicitante->co_prestamo,
+                    'persona_id'  => $request->user()->inversionista_id,
+                    'estado'      => 1,
+                ])
+                ->first();
+
+        if ( $inversionista_proyecto ) {
+            $solicitante->aprobadoPorUserActual = true;
         }
 
         $solicitante->imagenes = DB::table('r_imagenes_inmueble')->where('co_solicitud_prestamo', $solicitante->co_solicitud_prestamo)->where('in_estado', 1)->select('url_evidencia AS imagen')->get();        
