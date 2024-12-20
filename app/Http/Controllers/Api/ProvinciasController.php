@@ -14,7 +14,7 @@ class ProvinciasController extends Controller
         $provincias = DB::table('h_provincia')->select('co_provincia','no_provincia')->orderBy('no_provincia')->get();
         return response()->json([
             'data'  => ProvinciaResource::collection($provincias),
-            'mesage' => 'Registros obtenidos',
+            'message' => 'Registros obtenidos',
             'success' => true,
         ]);
     }

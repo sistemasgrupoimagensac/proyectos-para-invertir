@@ -98,7 +98,7 @@ class AllProjectsController extends Controller
 
         return response()->json([
             'data'  => ProjectResource::collection($solicitantes),
-            'mesage' => 'Registros obtenidos',
+            'message' => 'Registros obtenidos',
             'success' => true,
         ]);
     }

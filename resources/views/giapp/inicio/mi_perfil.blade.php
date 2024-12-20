@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="container-fluid seccion-1 d-none d-lg-block d-md-none d-sm-none d-xs-none ">
-        <p class="text-center">CONECTANDOMETAS CON OPORTUNIDADES | GENERA UNA RENTABILIDAD ANUAL DEA HASTA 35% ANUAL</p>
+        <p class="text-center">CONECTANDO METAS CON OPORTUNIDADES | GENERA UNA RENTABILIDAD ANUAL DE HASTA 35% ANUAL</p>
     </div>
     <!--desktop-->
     <div class="container-fluid seccion-2 p-3 d-block d-none d-lg-block">

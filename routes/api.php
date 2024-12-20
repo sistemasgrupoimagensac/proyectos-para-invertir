@@ -12,13 +12,11 @@ Route::post('/reset-password', 'Api\ResetPasswordController@sendPassword');
 Route::middleware('auth:api')->group(function() {
     Route::post('/logout', 'Api\AuthController@logout');
     Route::put('/change-password', 'Api\AuthController@changePassword');
-    Route::get('/user', function(Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', 'Api\UserController@user');
 
-    // Route::post('/like', [LikeController::class, 'meInteresa']);
-    // Route::post('/dislike', [LikeController::class, 'noMeInteresa']);
-    // Route::post('/aceptar-proyecto', [AprobarProyectoController::class, 'aceptar_proyecto']);
+    Route::post('/like', [LikeController::class, 'meInteresa']);
+    Route::post('/aceptar-proyecto', [AprobarProyectoController::class, 'aceptar_proyecto']);
+    Route::get('/favoritos', 'Api\FavoritosController@favoritos');
 
     Route::prefix('/projects')->group(function() {
         Route::get('/', 'Api\AllProjectsController@getAll');
