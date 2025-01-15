@@ -34,6 +34,7 @@ class ProjectResource extends JsonResource
             'longitud'              => $this->when(optional($this)->longitud, (double) optional($this)->longitud),
             'is_liked'              => $this->is_liked == 1,
             'is_aprobado'           => $this->aprobadoPorUserActual,
+            'ejecutivo_ventas'      => $this->name,
         ];
     }
 }

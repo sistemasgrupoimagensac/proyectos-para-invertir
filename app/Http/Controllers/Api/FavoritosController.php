@@ -25,6 +25,7 @@ class FavoritosController extends Controller
             ->leftJoin('a_tipo_cliente','p_prestamo.co_tipo_cliente','a_tipo_cliente.co_tipo_cliente')
             ->leftJoin('datos_prestamo', 'datos_prestamo.co_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo')
             ->leftJoin('a_tipo_moneda AS tipo_moneda_dato_prestamo', 'datos_prestamo.co_tipo_moneda', 'tipo_moneda_dato_prestamo.co_tipo_moneda')
+            ->leftJoin('p_usuario', 'p_usuario.co_usuario', 'p_prestamo.co_usuario')
             ->where([
                 'p_solicitud_prestamo.in_estado' => 1,
                 'p_prestamo.in_estado' => 1,
@@ -32,6 +33,7 @@ class FavoritosController extends Controller
             ->where('me_interesa.co_inversionista', $request->user()->id)
             ->where('me_interesa.estado', 1)
             ->select(
+                'name',
                 'p_solicitud_prestamo.co_solicitud_prestamo',
                 DB::raw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) as imagen_principal"),
                 'no_distrito',

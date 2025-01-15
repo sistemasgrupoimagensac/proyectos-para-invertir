@@ -24,12 +24,14 @@ class ProjectDetailsController extends Controller
             ->leftJoin('a_tipo_cliente','p_prestamo.co_tipo_cliente','a_tipo_cliente.co_tipo_cliente')
             ->leftJoin('datos_prestamo', 'datos_prestamo.co_solicitud_prestamo', 'p_solicitud_prestamo.co_solicitud_prestamo')
             ->leftJoin('a_tipo_moneda AS tipo_moneda_dato_prestamo', 'datos_prestamo.co_tipo_moneda', 'tipo_moneda_dato_prestamo.co_tipo_moneda')
+            ->leftJoin('p_usuario', 'p_usuario.co_usuario', 'p_prestamo.co_usuario')
             ->where([
                 'p_solicitud_prestamo.in_estado' => 1,
                 'p_prestamo.in_estado' => 1,
             ])
             ->where('p_solicitud_prestamo.co_solicitud_prestamo', $id)
             ->select(
+                'name',
                 'p_solicitud_prestamo.co_solicitud_prestamo',
                 'no_distrito',
                 'no_provincia',

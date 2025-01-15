@@ -23,6 +23,12 @@ class UserResource extends JsonResource
             'dni'               => optional($this->persona)->nu_documento_identidad,
             'direccion'         => optional($this->persona)->no_direccion_ultima,
             'api_token'         => $this->api_token,
+            'can_access'        => (bool) $this->can_access,
+            'analista'          => [
+                'name'  => optional(optional($this->solicitud)->analista)->name,
+                'email' => optional(optional($this->solicitud)->analista)->email,
+                'celular' => optional(optional($this->solicitud)->analista)->nu_celular_trabajo ?? '946038148',
+            ],
         ];
     }
 }

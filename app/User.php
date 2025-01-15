@@ -18,7 +18,7 @@ class User extends Authenticatable
      */
     protected $table = 'users_gi';
     protected $fillable = [
-        'id','name', 'email', 'password','inversionista_id'
+        'id','name', 'email', 'password','inversionista_id', 'can_access',
     ];
 
     /**
@@ -41,5 +41,10 @@ class User extends Authenticatable
     public function persona()
     {
         return $this->belongsTo('App\Persona', 'inversionista_id','co_persona');
+    }
+
+    public function solicitud()
+    {
+        return $this->hasOne('App\PSolicitudInversionista', 'co_persona', 'inversionista_id');
     }
 }
