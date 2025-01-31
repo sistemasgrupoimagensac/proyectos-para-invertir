@@ -55,9 +55,10 @@ class FavoritosController extends Controller
                         'valor_comercial_inmueble',
                         DB::raw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) as imagen_principal")
                     )
+                    ->whereIn('a_tipo_credito.co_tipo_credito', [2, 3, 4])
                     ->whereRaw("p_prestamo.co_ocurrencia_actual IN (31, 32, 33, 34, 36)")
                     ->where(function($q) {
-                        $q->where('p_prestamo.co_condicion_actual', '!=', 58)->orWhereNull('co_condicion_actual');
+                        $q->whereNotIn('p_prestamo.co_condicion_actual', [58, 57])->orWhereNull('co_condicion_actual');
                     })
                     ->whereRaw("(select url_evidencia from r_imagenes_inmueble imagen where imagen.co_solicitud_prestamo = p_solicitud_prestamo.co_solicitud_prestamo and in_estado = 1 order by id asc limit 1) IS NOT NULL")
                     ->where('me_interesa.co_inversionista', Auth::user()->id)
