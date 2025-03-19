@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', 'Api\AuthController@login');
 Route::post('/reset-password', 'Api\ResetPasswordController@sendPassword');
 
-Route::middleware('auth:api')->group(function() {
+Route::middleware(['auth:api', 'checkBlockedApi'])->group(function() {
     Route::post('/logout', 'Api\AuthController@logout');
     Route::put('/change-password', 'Api\AuthController@changePassword');
     Route::get('/user', 'Api\UserController@user');

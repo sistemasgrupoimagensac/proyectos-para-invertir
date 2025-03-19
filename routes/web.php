@@ -20,7 +20,7 @@ Route::post('/login', [LoginController::class, 'login'])->middleware('guest')->n
 Route::get('reset-password', [ResetPasswordController::class, 'reset'])->name('reset.password');
 Route::post('enviar-password-reset', [ResetPasswordController::class, 'sendPassword'])->name('enviar-password-reset');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'checkBlocked'])->group(function () {
     // Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/home',[InicioController::class,'index'])->name('inicio');
     Route::get('/detalle/{id}',[DetalleInmuebleController::class,'index'])->name('detalle');
