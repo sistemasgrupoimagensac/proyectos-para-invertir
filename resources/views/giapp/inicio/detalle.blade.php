@@ -252,12 +252,9 @@
             </div>
             {{-- @if ( $detalle->co_ocurrencia_actual == 34 ) --}}
             @if ( $aprobadoPorUserActual )
-                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem;" class="pt-4">
-                        {{-- <span style="display: inline-block; white-space: pre-line">Desaprobar<br>proyecto</span>  --}}
-                        {{-- <a href="#" style="margin-right:20px;" class="btnDesaprobarProyecto" data-co-prestamoDesaprobar="{{ $detalle->co_prestamo }}"> --}}
+                    {{-- <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem;" class="pt-4">
                             <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar" style="margin: 0 10px 20px 0; cursor: pointer;">
-                        {{-- </a> --}}
-                    </p>
+                    </p> --}}
                 {{-- @endif --}}
             @else
                 <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem;" class="pt-4">

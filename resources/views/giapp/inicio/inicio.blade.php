@@ -384,20 +384,11 @@
                 <p class="pt-2">Interesados: {{ $totalLikesPorPrestamo[$item->co_prestamo] ?? 0 }}</p>
             </div>
             <div>
-            @if ( $item->aprobadoPorUserActual )
-                <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
-                    <img src="{{ asset('img/proyecto-aprobado.png') }}" style="height: 3rem;" alt="Desaprobar">
-                </p>
-            @else
                 <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem; margin-bottom: 0px;" class="pt-4" >
                     <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="{{ $item->co_prestamo }}">
                         <img src="{{ asset('img/proyecto-aprobar.png') }}" style="height: 3rem;" alt="Aprobar">
                     </a>
                 </p>
-            @endif
-            <p style="position:relative; right: 3rem; font-size: 0.8rem;" class="cont_aprobados" data-co_prestamo="{{ $item->co_prestamo }}">
-                Cant. de aprobaciones: {{ $item->total_aprobados_proyecto }}
-            </p>
             </div>
         </div>
         @endif
@@ -604,29 +595,6 @@
         });
     }
 
-    const agregarEventoDesaprobarProyecto = codProyecto => {
-        const $btnDesaprobarProyecto = document.querySelector(`.btnDesaprobarProyecto[data-co-prestamoDesaprobar='${codProyecto}']`);
-
-        if ( $btnDesaprobarProyecto ) {
-            $btnDesaprobarProyecto.addEventListener('click', function(event) {
-                event.preventDefault();
-                desaprobarProyecto(codProyecto);
-            });
-        }
-    };
-
-    const agregarEventoAceptarProyecto = codProyecto => {
-        const $btnAceptarProyecto = document.querySelector(`.btnAceptarProyecto[data-co-prestamoAceptar='${codProyecto}']`);
-        if ($btnAceptarProyecto) {
-            $btnAceptarProyecto.addEventListener('click', function(event) {
-                event.preventDefault();
-                $btnAceptarProyecto.style.pointerEvents = 'none';
-                $btnAceptarProyecto.style.opacity = '0.6';
-                aceptarProyecto(codProyecto, $btnAceptarProyecto);
-            });
-        }
-    };
-
     const aceptarProyecto = (codProyecto, $btnAceptarProyecto) => {
         axios.post('/aceptar-proyecto', {
             codigo_prestamo: codProyecto,
@@ -634,24 +602,10 @@
         .then(function (response) {
 
             if ( response.data.http_code === 200 ) {
-                const $cont_aprobados = document.querySelector(`.cont_aprobados[data-co_prestamo='${codProyecto}']`);
-                if ( $cont_aprobados ) {
-                    $cont_aprobados.textContent = `Cant. de aprobaciones: ${response.data.total_aprobados}`;
-                }
-                const $contenedorBoton = $btnAceptarProyecto.closest('p');
-                if ($contenedorBoton) {
-                    const nuevoBotonHTML = `
-                        <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.8rem; margin-bottom: 0px;" class="pt-4">
-                            <img src="${window.location.origin}/img/proyecto-aprobado.png" style="height: 3rem;" alt="Desaprobar">
-                        </p>
-                    `;
-                    $contenedorBoton.outerHTML = nuevoBotonHTML;
-                }
-                // agregarEventoDesaprobarProyecto(codProyecto);
-                if ( response.data.enviar_wsp ) {
-                    sendWsp(response.data.co_unico, response.data.analista)
-                }
                 Swal.fire("¡Aprobado!", "", "success");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
             } else {
                 alert( response.data.message )
                 $btnAceptarProyecto.style.pointerEvents = '';
@@ -670,34 +624,6 @@
         var encodedMessage = encodeURIComponent(fullMessage);
         const url = `https://wa.me/+51${phoneNumber}?text=${encodedMessage}`;
         window.open(url, '_blank');
-    }
-
-    const desaprobarProyecto = codProyecto => {
-        axios.post('/desaprobar-proyecto', {
-            codigo_prestamo: codProyecto,
-        })
-        .then(function (response) {
-
-            if ( response.data.http_code === 200 ) {
-                const $btnDesaprobarProyecto = document.querySelector(`.btnDesaprobarProyecto[data-co-prestamoDesaprobar='${codProyecto}']`);
-                const $contenedorBoton = $btnDesaprobarProyecto.closest('p');
-                // <span style="display: inline-block; white-space: pre-line">Aprobar<br>proyecto</span> 
-                const nuevoBotonHTML = `
-                    <p style="position:relative; display: flex; justify-content: space-between; align-items: center; right:1.5rem;" class="pt-4">
-                        <a href="#" style="margin-right:20px;" class="btnAceptarProyecto" data-co-prestamoAceptar="${codProyecto}">
-                            <img src="${window.location.origin}/img/proyecto-aprobar.png" style="height: 3rem;">
-                        </a>
-                    </p>
-                `;
-                $contenedorBoton.outerHTML = nuevoBotonHTML;
-                agregarEventoAceptarProyecto(codProyecto);
-            } else {
-                alert( response.data.message )
-            }
-        })
-        .catch(function (error) {
-            console.error('Error al aprobar el proyecto:', error);
-        });
     }
 
     const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto')
@@ -726,31 +652,6 @@
 
         });
     });
-
-    const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto')
-    $btnsDesaprobarProyecto.forEach( ($btnDesaprobarProyecto) => {
-        $btnDesaprobarProyecto.addEventListener('click', function() {
-            event.preventDefault();
-            const $codigoProyecto = this.getAttribute('data-co-prestamoDesaprobar')
-            desaprobarProyecto($codigoProyecto)
-        });
-    });
-
-    /* document.addEventListener('DOMContentLoaded', function() {
-        // Agregar eventos a los botones "Aprobar proyecto"
-        const $btnsAceptarProyecto = document.querySelectorAll('.btnAceptarProyecto');
-        $btnsAceptarProyecto.forEach($btnAceptarProyecto => {
-            const codProyecto = $btnAceptarProyecto.getAttribute('data-co-prestamoAceptar');
-            agregarEventoAceptarProyecto(codProyecto);
-        });
-
-        // Agregar eventos a los botones "Desaprobar proyecto"
-        const $btnsDesaprobarProyecto = document.querySelectorAll('.btnDesaprobarProyecto');
-        $btnsDesaprobarProyecto.forEach($btnDesaprobarProyecto => {
-            const codProyecto = $btnDesaprobarProyecto.getAttribute('data-co-prestamoDesaprobar');
-            agregarEventoDesaprobarProyecto(codProyecto);
-        });
-    }); */
 
 </script>
 </body>
