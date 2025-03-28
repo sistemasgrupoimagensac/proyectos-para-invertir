@@ -283,7 +283,7 @@
                 @endforeach
             </div>
             @if(sizeof($imagenes) > 3)
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end mt-3">
                 <a class="list-style-none" href="javascript:void(0)" onclick="document.querySelector('#img-inmuebles a').click();"><i class="far fa-eye me-1"></i>Ver más fotos</a>
             </div>
             @endif
